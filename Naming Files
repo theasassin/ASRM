@@ -1,0 +1,14 @@
+# login to AagaardLab2 
+ls
+sassin@aagaardlab2:~$ cd ASRM
+(base) sassin@aagaardlab2:~/ASRM$ ls
+Raw_Data
+(base) sassin@aagaardlab2:~/ASRM$ cd Raw_Data/
+(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ ls
+Demultiplex_Sheet.txt  Raw_Read1.fq.bz2  Raw_Read2_Barcodes.fq.bz2  Raw_Read3.fq.bz2  Read_QC.txt
+(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ # save first two columns to properly format Demultiplex sheet for program
+(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ cut -f 1-2 Demultiplex_Sheet.txt > two_coulmn_Demultiplex_Sheet.txt
+(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ # verify 2 column demultiplex sheet is there 
+sassin@aagaardlab2:~/ASRM/Raw_Data$ ls
+Demultiplex_Sheet.txt  Raw_Read2_Barcodes.fq.bz2  Read_QC.txt
+Raw_Read1.fq.bz2       Raw_Read3.fq.bz2           two_coulmn_Demultiplex_Sheet.txt
