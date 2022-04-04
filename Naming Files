@@ -1,14 +1,33 @@
-# login to AagaardLab2 
+#login to AagaardLab2 
+
+#see what files are available
 ls
-sassin@aagaardlab2:~$ cd ASRM
-(base) sassin@aagaardlab2:~/ASRM$ ls
-Raw_Data
-(base) sassin@aagaardlab2:~/ASRM$ cd Raw_Data/
-(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ ls
-Demultiplex_Sheet.txt  Raw_Read1.fq.bz2  Raw_Read2_Barcodes.fq.bz2  Raw_Read3.fq.bz2  Read_QC.txt
-(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ # save first two columns to properly format Demultiplex sheet for program
-(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ cut -f 1-2 Demultiplex_Sheet.txt > two_coulmn_Demultiplex_Sheet.txt
-(base) sassin@aagaardlab2:~/ASRM/Raw_Data$ # verify 2 column demultiplex sheet is there 
-sassin@aagaardlab2:~/ASRM/Raw_Data$ ls
-Demultiplex_Sheet.txt  Raw_Read2_Barcodes.fq.bz2  Read_QC.txt
-Raw_Read1.fq.bz2       Raw_Read3.fq.bz2           two_coulmn_Demultiplex_Sheet.txt
+
+# login to correct file 
+cd ASRM
+
+#again see files 
+ls
+
+#identify Raw Data file and login
+cd Raw_Data
+
+#see what files are in Raw Data file 
+ls
+
+# see the following files Demultiplex_Sheet.txt  Raw_Read1.fq.bz2  Raw_Read2_Barcodes.fq.bz2  Raw_Read3.fq.bz2  Read_QC.txt
+
+# save first two columns to properly format Demultiplex sheet for program
+cut -f 1-2 Demultiplex_Sheet.txt > two_column_Demultiplex_Sheet.txt
+
+#use EMACS to delete the header off the two_column txt file 
+emacs two_column_Demultiplex_Sheet.txt
+
+#save EMACS file as no_header_demultiplex.txt with CRTL-X, CRTL-W then save with CRTL-X, CRTL-C 
+
+#verify the file is there 
+ls 
+
+
+
+
