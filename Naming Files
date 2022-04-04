@@ -98,6 +98,11 @@ cd all_split_files
 # Running trim galore (this takes a while, trims each paired sample) 
 trim_galore --q 30 --gzip --fastqc --paired *.fq -o trimmed_files/
 
+# cd into /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files
+
+# move all the validated trimmed files into a directory called validated trimmed samples 
+ cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples
+
 
 
 
