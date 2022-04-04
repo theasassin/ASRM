@@ -101,9 +101,86 @@ trim_galore --q 30 --gzip --fastqc --paired *.fq -o trimmed_files/
 # cd into /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files
 
 # move all the validated trimmed files into a directory called validated trimmed samples 
- cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples
 
+# NOW WE ARE GOING TO RENAME THE TRIMMED VALIDATED SAMPLES BY THEIR TREATMENT GROUP AND COHORT 
 
+# cd into the trimmed_files directory
+cd /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples
 
+# to rename the validated barcode split files (both forward and reverse reads) by the treatments they received (part 1, page 3 of amanda's notebook) 
 
+# renaming the Cohort #1 (Control and Cholesterol) 
+rename 's/30598/control_cholesterol/g' *
+rename 's/30466/control_cholesterol/g' *
+rename 's/30202/control_cholesterol/g' *
+rename 's/30707/control_cholesterol/g' *
+rename 's/30466/control_cholesterol/g' *
+rename 's/28961/control_cholesterol/g' *
+rename 's/29573/control_cholesterol/g' *
 
+# now adding cohort 1 to title 
+rename 's/control_cholesterol/Cohort1_control_cholesterol/g' *
+
+# renaming cohort #2 (Control and testosterone)
+rename 's/30628/Cohort2_control_testosterone/g' *
+rename 's/29809/Cohort2_control_testosterone/g' *
+rename 's/30414/Cohort2_control_testosterone/g' *
+rename 's/29939/Cohort2_control_testosterone/g' *
+rename 's/30408/Cohort2_control_testosterone/g' *
+
+# renaming cohort #3 (high fat and cholesterol) 
+rename 's/29273/Cohort3_highfat_cholesterol/g' *
+rename 's/29820/Cohort3_highfat_cholesterol/g' *
+rename 's/30618/Cohort3_highfat_cholesterol/g' *
+rename 's/30243/Cohort3_highfat_cholesterol/g' *
+rename 's/29818/Cohort3_highfat_cholesterol/g' *
+rename 's/30625/Cohort3_highfat_cholesterol/g' *
+
+# renaming cohort #4 (high fat and testosterone) 
+rename 's/30019/Cohort4_highfat_testosterone/g' *
+rename 's/29991/Cohort4_highfat_testosterone/g' *
+rename 's/29926/Cohort4_highfat_testosterone/g' *
+rename 's/30491/Cohort4_highfat_testosterone/g' *
+rename 's/29908/Cohort4_highfat_testosterone/g' *
+rename 's/29696/Cohort4_highfat_testosterone/g' *
+rename 's/30420/Cohort4_highfat_testosterone/g' *
+rename 's/28961/Cohort4_highfat_testosterone/g' *
+
+# renaming part 2 of amanda's notebook (page 13) 
+# cohort #1 
+rename 's/30302/Cohort1_control_cholesterol/g' *
+rename 's/30374/Cohort1_control_cholesterol/g' *
+rename 's/29906/Cohort1_control_cholesterol/g' *
+rename 's/29898/Cohort1_control_cholesterol/g' *
+rename 's/30374/Cohort1_control_cholesterol/g' *
+rename 's/29906/Cohort1_control_cholesterol/g' *
+
+# renaming cohort #2 
+rename 's/29911/Cohort2_control_testosterone/g' *
+rename 's/30435/Cohort2_control_testosterone/g' *
+rename 's/30630/Cohort2_control_testosterone/g' *
+rename 's/30485/Cohort2_control_testosterone/g' *
+rename 's/29902/Cohort2_control_testosterone/g' *
+rename 's/29939/Cohort2_control_testosterone/g' *
+rename 's/29902/Cohort2_control_testosterone/g' *
+
+#renaming cohort #3
+rename 's/30511/Cohort3_highfat_cholesterol/g' *
+rename 's/29387/Cohort3_highfat_cholesterol/g' *
+rename 's/29818/Cohort3_highfat_cholesterol/g' *
+rename 's/30237/Cohort3_highfat_cholesterol/g' *
+rename 's/30508/Cohort3_highfat_cholesterol/g' *
+rename 's/30237/Cohort3_highfat_cholesterol/g' *
+rename 's/30511/Cohort3_highfat_cholesterol/g' *
+
+#renaming cohort #4
+rename 's/30513/Cohort4_highfat_testosterone/g' *
+rename 's/29901/Cohort4_highfat_testosterone/g' *
+rename 's/30503/Cohort4_highfat_testosterone/g' *
+
+#make a directory for renamed samples and move them into the directory 
+mkdir renamed_validated_trimmed samples 
+cp *.fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples/renamed_validated_trimmed_samples/
+
+#renaming the Negative Kits- went into finle zilla and used format "AagardNo.Cohort5_negative_negative_BodySite_Validated_R1 or 2_001.fq.gz
