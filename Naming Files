@@ -184,3 +184,10 @@ mkdir renamed_validated_trimmed samples
 cp *.fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_trimmed_samples/renamed_validated_trimmed_samples/
 
 #renaming the Negative Kits- went into finle zilla and used format "AagardNo.Cohort5_negative_negative_BodySite_Validated_R1 or 2_001.fq.gz
+
+NEED TO START HERE 4-5 # making everything underscored 
+rename 's/.Cohort1/_Cohort1/g' * 
+rename 's/.Cohort2/_Cohort2/g' *
+rename 's/.Cohort3/_Cohort3/g' *
+rename 's/.Cohort4/_Cohort4/g' *
+rename 's/.Cohort5/_Cohort5/g' *
