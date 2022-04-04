@@ -28,6 +28,77 @@ emacs two_column_Demultiplex_Sheet.txt
 #verify the file is there 
 ls 
 
+#unzip the files with lbzip2 
+lbzip2 -vd [Raw_Read1.fq.bz2]
+lbzip2 -vd [Raw_Read2_Barcodes.fq.bz2]
+lbzip2 -vd [Raw_Read3.fq.bz2]
+
+# now you should have Raw_Read1.fq , Raw_Read2_Barcodes.fq, and Raw_Read3.fq
+
+# Demultiplex step with Barcode splitter (takes about 10-15 minutes) 
+barcode_splitter --bcfile no_header_demultiplex.txt Raw_Read1.fq Raw_Read2_Barcodes.fq Raw_Read3.fq --idxread 2 --suffix .fq
+
+# Preparing Barcode split files for TrimGalore and making directories
+mkdir R1_split_files
+mkdir R2_split_files 
+
+# Moving R1 files 
+mv *read-1.fq /home/sassin/ASRM/Raw_Data/R1_split_files
+# Moving R3 files 
+mv *read-3.fq /home/sassin/ASRM/Raw_Data/R2_split_files
+
+#focus on changes in R3 files 
+cd R2_split_files/
+
+#Renaming the R3 files to R2 
+for f in *3.fq; do
+    mv -- "$f" "${f%3.fq}2.fq"
+done
+
+#Renaming the R2 files to _R2
+for f in *-2.fq; do
+    mv -- "$f" "${f%-2.fq}_R2.fq"
+done
+
+# get out of R2 files 
+cd ..
+
+#move into R1 files 
+cd R1_split_files/
+
+#Renaming the R1 files to _R1
+for f in *-1.fq; do
+    mv -- "$f" "${f%-1.fq}_R1.fq"
+done
+
+# Running trim galore 
+trim_galore --paired --q 30 --gzip --fastqc /home/sassin/version2_sassin_PCOS/R1_split_files/*.fq /home/sassin/version2_sassin_PCOS/R2_split_files/*.fq -o trimmed_files
+
+#make a directory for all split files 
+cd .. 
+mkdir all_split_files
+
+#Merge R1 and R2 files 
+cd R1_split_files 
+cp *fq /home/sassin/ASRM/Raw_Data/all_split_files
+
+#move back in directory 
+cd ..
+
+#move into R2 file 
+cd R2_split_files
+cp *fq /home/sassin/ASRM/Raw_Data/all_split_files
+
+#move back in directory 
+cd ..
+
+#move into all split files to run Trim Galore 
+cd all_split_files
+
+# Running trim galore (this takes a while, trims each paired sample) 
+trim_galore --q 30 --gzip --fastqc --paired *.fq -o trimmed_files/
+
+
 
 
 
