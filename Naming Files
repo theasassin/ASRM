@@ -185,9 +185,32 @@ cp *.fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/trimmed_files/validated_tr
 
 #renaming the Negative Kits- went into finle zilla and used format "AagardNo.Cohort5_negative_negative_BodySite_Validated_R1 or 2_001.fq.gz
 
-NEED TO START HERE 4-5 # making everything underscored 
+# making everything underscored 
 rename 's/.Cohort1/_Cohort1/g' * 
 rename 's/.Cohort2/_Cohort2/g' *
 rename 's/.Cohort3/_Cohort3/g' *
 rename 's/.Cohort4/_Cohort4/g' *
 rename 's/.Cohort5/_Cohort5/g' *
+
+# make . separated titles 
+rename 's/_Cohort1_control_cholesterol_Vagina_Validated/.Cohort1.control.cholesterol.vagina.validated/g' *
+rename 's/_Cohort1_control_cholesterol_Oral_Validated/.Cohort1.control.cholesterol.oral.validated/g' *
+rename 's/_Cohort1_control_cholesterol_Cervix_Validated/.Cohort1.control.cholesterol.cervix.validated/g' *
+rename 's/_Cohort1_control_cholesterol_Anus_Validated/.Cohort1.control.cholesterol.anus.validated/g' *
+rename 's/_Cohort1_control_cholesterol_Rectal_Validated/.Cohort1.control.cholesterol.rectal.validated/g' *
+
+rename 's/_Cohort2_control_testosterone_Vagina_Validated/.Cohort2.control.testosterone.vagina.validated/g' *
+rename 's/_Cohort2_control_testosterone_Oral_Validated/.Cohort2.control.testosterone.oral.validated/g' *
+rename 's/_Cohort2_control_testosterone_Cervix_Validated/.Cohort2.control.testosterone.cervix.validated/g' *
+rename 's/_Cohort2_control_testosterone_Anus_Validated/.Cohort2.control.testosterone.anus.validated/g' *
+rename 's/_Cohort2_control_testosterone_Rectal_Validated/.Cohort2.control.testosterone.rectal.validated/g' *
+
+rename 's/_Cohort3_highfat_cholesterol_Vagina_Validated/.Cohort3.highfat.cholesterol.vagina.validated/g' *
+rename 's/_Cohort3_highfat_cholesterol_Oral_Validated/.Cohort3.highfat.cholesterol.oral.validated/g' *
+rename 's/_Cohort3_highfat_cholesterol_Cervix_Validated/.Cohort3.highfat.cholesterol.cervix.validated/g' *
+rename 's/_Cohort3_highfat_cholesterol_Anus_Validated/.Cohort3.highfat.cholesterol.anus.validated/g' *
+rename 's/_Cohort3_highfat_cholesterol_Rectal_Validated/.Cohort3.highfat.cholesterol.rectal.validated/g' *
+
+rename 's/_Cohort5_negative_negative_Vagina_Validated/.Cohort5.negative.negative.vagina.validated/g' *
+rename 's/_Cohort5_negative_negative_Cervix_Validated/.Cohort5.negative.negative.cervix.validated/g' *
+rename 's/_Cohort5_negative_negative_Negative_Validated/.Cohort5.negative.negative.negative.validated/g' *
