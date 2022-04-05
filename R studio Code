@@ -1,17 +1,18 @@
 #load dada2
 library (dada2)
 
-#set the correct path
-path <- "validated_trimmed_samples"
+#set working directory
+setwd("~/PCOS Renamed Samples")
 
-#set working directory PCOS_Rhesus_Sassin
+#set the correct path
+path <- "all.trimmed.validated.files.renamed.only.cohorts"
 
 #verify the correct path is set 
 list.files(path)
 
 # Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq (Aagaard.91.30435.Oral-read_R1_val_1.fq.gz) and SAMPLENAME_R2_001.fastq (Aagaard.91.30435.Oral-read_R2_val_2.fq.gz) 
-fnFs <- sort(list.files(path, pattern="_R1_val_1.fq.gz", full.names = TRUE))
-fnRs <- sort(list.files(path, pattern="_R2_val_2.fq.gz", full.names = TRUE))
+fnFs <- sort(list.files(path, pattern="_R1_001.fq.gz", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern="_R2_001.fq.gz", full.names = TRUE))
 
 # Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
@@ -67,8 +68,6 @@ names(derepRs) <- sample.names[exists]
 #Sample Inference of the derep forward samples no pooling 
 dadaFs <- dada(derepFs, err=errF, multithread=TRUE)
 
-#Sample Inference of the derep reverse samples no pooling 
-dadaRs <- dada(derepRs, err=errR, multithread=TRUE)
 
 #inspecting the dada-class object
 dadaFs[[1]]
@@ -86,6 +85,10 @@ dim(seqtab)
 
 # Inspect distribution of sequence lengths
 table(nchar(getSequences(seqtab)))
+# results below 
+# 240  248  249  251  252  253  254  255  313  314  335  388  413  416  417 
+#  4    1    3    7 1847 6828  188    4    2    1    2    3    1    1    1 
+# can remove non target length sequences with seqtab2 <- seqtab[,nchar(colnames(seqtab)) %in% 250:256]).
 
 # Remove chimeras
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
@@ -102,38 +105,137 @@ track <- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, 
 colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
 rownames(track) <- sample.names
 
+#take a look at the data 
+head(track)
+
 #make a table in TSV form
-write.table(track, "read-count-tracking.tsv", quote=FALSE, sep="\t", col.names=NA)
+write.table(track, "Renamed-cohortsonly-data-read-count-tracking.tsv", quote=FALSE, sep="\t", col.names=NA)
 
-#loading reference taxonomy object
-load("SILVA_SSU_r138_2019.RData")
-
-#loading DECIPHER
-library(DECIPHER)
-
-#assign taxonomy
+#### continuing via the DADA2 Tutorial pipeline ---> skip to astrobiomike portion if you want to use decipher  
 taxa <- assignTaxonomy(seqtab.nochim, "silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
 
+#Inspecting the taxonomic assignments 
 taxa.print <- taxa # Removing sequence rownames for display only
 rownames(taxa.print) <- NULL
 head(taxa.print)
 
-#construct a data.frame 
+library(phyloseq)
+
+library(Biostrings)
+
+library(ggplot2)
+
+theme_set(theme_bw())
+
+#continuing along DADA 2 pipeline tutorial, now we construct a simple data.frame and run phyloseq 
+
 samples.out <- rownames(seqtab.nochim)
-subject <- sapply(strsplit(samples.out, "D"), `[`, 1)
-samdf <- data.frame(Subject=subject)
+
+#Names of subjects 
+subject.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 2)
+
+#Names of Cohorts
+cohort.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 3)
+
+#Names of diet treatment 
+diet.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 4)
+
+#Names of hormone treatment 
+hormone.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 5)
+
+#Names of body sites 
+body.site <- sapply(strsplit(samples.out,"[.]"), `[`, 6)
+
+#Make our data frame 
+samdf <- data.frame(Subject=subject.numbers, Cohort=cohort.numbers, Diet=diet.treatment, Hormone=hormone.treatment, Site=body.site)
 rownames(samdf) <- samples.out
 
-#construct a phyloseq object 
+#Construct our Phyloseq object 
 ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
                sample_data(samdf), 
                tax_table(taxa))
-ps <- prune_samples(sample_names(ps) != "Mock", ps) # Remove mock sample
-ps <- prune_samples(sample_names(ps) != "Mock", ps) # Remove mock sample
 
-#making short ASVs from full DNA sequence 
+# Store DNA sequences of our ASVs in the refseq spot 
 dna <- Biostrings::DNAStringSet(taxa_names(ps))
 names(dna) <- taxa_names(ps)
 ps <- merge_phyloseq(ps, dna)
 taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
 ps
+
+#Visualize alpha diversity 
+plot_richness(ps, x="Site", measures=c("Shannon", "Simpson"), color="Cohort")
+
+
+# Transform data to proportions as appropriate for Bray-Curtis distances
+ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
+ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
+
+plot_ordination(ps.prop, ord.nmds.bray, color="Site", title="Bray NMDS")
+plot_ordination(ps.prop, ord.nmds.bray, color="Cohort", title="Bray NMDS")
+
+#Now to make a Bar Plot of top 20 
+top20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
+ps.top20 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))
+ps.top20 <- prune_taxa(top20, ps.top20)
+plot_bar(ps.top20, x="Cohort", fill="Family") + facet_wrap(~Site, scales="free_x")
+
+#Bar Plot of top 10 
+top10 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:10]
+ps.top10 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))
+ps.top10 <- prune_taxa(top10, ps.top10)
+plot_bar(ps.top10, x="Cohort", fill="Family") + facet_wrap(~Site, scales="free_x")
+
+
+#to make a very busy relative abundance chart 
+plot_bar(ps.top20, fill="Phylum") + geom_bar(aes(color = Phylum, fill = Phylum), stat="identity", position="stack") + labs(x = "Cohort", y = "Relative Abundance\n") + theme(panel.background = element_blank())
+
+
+#### here starts the astrobiomike way of processing the data via DECIPHER 
+
+## downloading DECIPHER-formatted SILVA v138 reference
+download.file(url="http://www2.decipher.codes/Classification/TrainingSets/SILVA_SSU_r138_2019.RData", destfile="SILVA_SSU_r138.RData")
+
+## loading reference taxonomy object
+load(SILVA_SSU_r138_2019.RData)
+
+## loading DECIPHER
+library(DECIPHER)
+
+library(dada2)
+
+## creating DNAStringSet object of our ASVs
+dna <- DNAStringSet(getSequences(seqtab.nochim))
+
+#and classifying
+tax_info <- IdTaxa(test=dna, trainingSet=trainingSet, strand="both", processors=NULL) 
+
+# giving our seq headers more manageable names (ASV_1, ASV_2...)
+asv_seqs <- colnames(seqtab.nochim)
+asv_headers <- vector(dim(seqtab.nochim)[2], mode="character")
+
+for (i in 1:dim(seqtab.nochim)[2]) {
+  asv_headers[i] <- paste(">ASV", i, sep="_")
+}
+
+# making and writing out a fasta of our final ASV seqs:
+asv_fasta <- c(rbind(asv_headers, asv_seqs))
+write(asv_fasta, "ASVs.fa")
+
+# count table:
+asv_tab <- t(seqtab.nochim)
+row.names(asv_tab) <- sub(">", "", asv_headers)
+write.table(asv_tab, "ASVs_counts.tsv", sep="\t", quote=F, col.names=NA)
+
+# tax table:
+# creating table of taxonomy and setting any that are unclassified as "NA"
+ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species")
+asv_tax <- t(sapply(tax_info, function(x) {
+  m <- match(ranks, x$rank)
+  taxa <- x$taxon[m]
+  taxa[startsWith(taxa, "unclassified_")] <- NA
+  taxa
+}))
+colnames(asv_tax) <- ranks
+rownames(asv_tax) <- gsub(pattern=">", replacement="", x=asv_headers)
+
+write.table(asv_tax, "ASVs_taxonomy.tsv", sep = "\t", quote=F, col.names=NA)
