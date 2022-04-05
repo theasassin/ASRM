@@ -145,7 +145,7 @@ rename 's/30491/Cohort4_highfat_testosterone/g' *
 rename 's/29908/Cohort4_highfat_testosterone/g' *
 rename 's/29696/Cohort4_highfat_testosterone/g' *
 rename 's/30420/Cohort4_highfat_testosterone/g' *
-rename 's/28961/Cohort4_highfat_testosterone/g' *
+
 
 # renaming part 2 of amanda's notebook (page 13) 
 # cohort #1 
@@ -211,6 +211,143 @@ rename 's/_Cohort3_highfat_cholesterol_Cervix_Validated/.Cohort3.highfat.cholest
 rename 's/_Cohort3_highfat_cholesterol_Anus_Validated/.Cohort3.highfat.cholesterol.anus.validated/g' *
 rename 's/_Cohort3_highfat_cholesterol_Rectal_Validated/.Cohort3.highfat.cholesterol.rectal.validated/g' *
 
+rename 's/_Cohort4_highfat_testosterone_Vagina_Validated/.Cohort4.highfat.testosterone.vagina.validated/g' *
+rename 's/_Cohort4_highfat_testosterone_Oral_Validated/.Cohort4.highfat.testosterone.oral.validated/g' *
+rename 's/_Cohort4_highfat_testosterone_Cervix_Validated/.Cohort4.highfat.testosterone.cervix.validated/g' *
+rename 's/_Cohort4_highfat_testosterone_Anus_Validated/.Cohort4.highfat.testosterone.anus.validated/g' *
+rename 's/_Cohort4_highfat_testosterone_Rectal_Validated/.Cohort4.highfat.testosterone.rectal.validated/g' *
+
 rename 's/_Cohort5_negative_negative_Vagina_Validated/.Cohort5.negative.negative.vagina.validated/g' *
 rename 's/_Cohort5_negative_negative_Cervix_Validated/.Cohort5.negative.negative.cervix.validated/g' *
 rename 's/_Cohort5_negative_negative_Negative_Validated/.Cohort5.negative.negative.negative.validated/g' *
+
+########### Renaming samples before running TrimGalore to Keep Monkey Number#########3 
+cd into /home/sassin/ASRM/Raw_Data/all_split_files/R1_R2_before_trimming 
+
+#Make a directory for renamed, pre-trimmed samples
+mkdir R1_R2_before_trimming_renamed
+
+#Copy samples from R1 and R2 before trimming to new renamed directory 
+cp *fq //home/sassin/ASRM/Raw_Data/all_split_files/R1_R2_before_trimming_renamed
+
+# renaming the Cohort #1 (Control and Cholesterol) 
+rename 's/30598/30598.control_cholesterol/g' *
+rename 's/30466/30466.control_cholesterol/g' *
+rename 's/30202/30202.control_cholesterol/g' *
+rename 's/30707/30707.control_cholesterol/g' *
+rename 's/30466/30466.control_cholesterol/g' *
+rename 's/28961/28961.control_cholesterol/g' *
+rename 's/29573/29573.control_cholesterol/g' *
+
+#30466 doubled up for some reason so getting rid of repetition
+rename 's/30466.control_cholesterol.control_cholesterol/30466.control_cholesterol/g' *
+
+# now adding cohort 1 to title 
+rename 's/control_cholesterol/Cohort1_control_cholesterol/g' *
+
+# renaming cohort #2 (Control and testosterone)
+rename 's/30628/30628.Cohort2_control_testosterone/g' *
+rename 's/29809/29809.Cohort2_control_testosterone/g' *
+rename 's/30414/30414.Cohort2_control_testosterone/g' *
+rename 's/29939/29939.Cohort2_control_testosterone/g' *
+rename 's/30408/30408.Cohort2_control_testosterone/g' *
+
+# renaming cohort #3 (high fat and cholesterol) 
+rename 's/29273/29273.Cohort3_highfat_cholesterol/g' *
+rename 's/29820/29820.Cohort3_highfat_cholesterol/g' *
+rename 's/30618/30618.Cohort3_highfat_cholesterol/g' *
+rename 's/30243/30243.Cohort3_highfat_cholesterol/g' *
+rename 's/29818/29818.Cohort3_highfat_cholesterol/g' *
+rename 's/30625/30625.Cohort3_highfat_cholesterol/g' *
+
+# renaming cohort #4 (high fat and testosterone) 
+rename 's/30019/30019.Cohort4_highfat_testosterone/g' *
+rename 's/29991/29991.Cohort4_highfat_testosterone/g' *
+rename 's/29926/29926.Cohort4_highfat_testosterone/g' *
+rename 's/30491/30491.Cohort4_highfat_testosterone/g' *
+rename 's/29908/29908.Cohort4_highfat_testosterone/g' *
+rename 's/29696/29696.Cohort4_highfat_testosterone/g' *
+rename 's/30420/30420.Cohort4_highfat_testosterone/g' *
+# do not do this step in future iterations of code. Corrected with step below. 
+# rename 's/28961/28961.Cohort4_highfat_testosterone/g' * 
+
+# sample 28961 eroneously got added to cohort 4. verfied in notebook that it is cohort 1. Will now rename appropriately 
+rename 's/28961.Cohort4_highfat_testosterone.Cohort1_control_cholesterol/28961.Cohort1_control_cholesterol/g' *
+
+# renaming part 2 of amanda's notebook (page 13) 
+# cohort #1 
+rename 's/30302/30302.Cohort1_control_cholesterol/g' *
+rename 's/30374/30374.Cohort1_control_cholesterol/g' *
+rename 's/29906/29906.Cohort1_control_cholesterol/g' *
+rename 's/29898/29898.Cohort1_control_cholesterol/g' *
+# do not do this step as it is repetitive 
+# rename 's/30374/30374.Cohort1_control_cholesterol/g' *
+rename 's/29906/29906.Cohort1_control_cholesterol/g' *
+
+# renaming cohort #2 
+rename 's/29911/29911.Cohort2_control_testosterone/g' *
+rename 's/30435/30435.Cohort2_control_testosterone/g' *
+rename 's/30630/30630.Cohort2_control_testosterone/g' *
+rename 's/30485/30485.Cohort2_control_testosterone/g' *
+rename 's/29902/29902.Cohort2_control_testosterone/g' *
+rename 's/29939/29939.Cohort2_control_testosterone/g' *
+# do not do this step as it is repetitive 
+# rename 's/29902/29902.Cohort2_control_testosterone/g' *
+
+#renaming cohort #3
+rename 's/30511/30511.Cohort3_highfat_cholesterol/g' *
+rename 's/29387/29387.Cohort3_highfat_cholesterol/g' *
+# do not do this step as it is repetitive 
+# rename 's/29818/29818.Cohort3_highfat_cholesterol/g' *
+rename 's/30237/30237.Cohort3_highfat_cholesterol/g' *
+rename 's/30508/30508.Cohort3_highfat_cholesterol/g' *
+
+
+#renaming cohort #4
+rename 's/30513/30513.Cohort4_highfat_testosterone/g' *
+rename 's/29901/29901.Cohort4_highfat_testosterone/g' *
+rename 's/30503/30503.Cohort4_highfat_testosterone/g' *
+
+these all got doubled up for some reason so getting rid of repetition
+rename 's/29939.Cohort2_control_testosterone.Cohort2_control_testosterone/29939.Cohort2_control_testosterone/g' *
+rename 's/29906.Cohort1_control_cholesterol.Cohort1_control_cholesterol/29906.Cohort1_control_cholesterol/g' *
+rename 's/30374.Cohort1_control_cholesterol.Cohort1_control_cholesterol/30374.Cohort1_control_cholesterol/g' *
+rename 's/29902.Cohort2_control_testosterone.Cohort2_control_testosterone/29902.Cohort2_control_testosterone/g' *
+rename 's/29818.Cohort3_highfat_cholesterol.Cohort3_highfat_cholesterol/29818.Cohort3_highfat_cholesterol/g' *
+
+#renaming the Negative Kits- went into finle zilla and used format "AagardNo.Kit.Cohort5.negative.negative.BodySite-read_R1 orR2
+
+# making everything underscored 
+rename 's/.Cohort1/_Cohort1/g' * 
+rename 's/.Cohort2/_Cohort2/g' *
+rename 's/.Cohort3/_Cohort3/g' *
+rename 's/.Cohort4/_Cohort4/g' *
+rename 's/.Cohort5/_Cohort5/g' *
+
+# make . separated titles 
+rename 's/_Cohort1_control_cholesterol.Vagina/.Cohort1.control.cholesterol.vagina/g' *
+rename 's/_Cohort1_control_cholesterol.Oral/.Cohort1.control.cholesterol.oral/g' *
+rename 's/_Cohort1_control_cholesterol.Cervix/.Cohort1.control.cholesterol.cervix/g' *
+rename 's/_Cohort1_control_cholesterol.Anus/.Cohort1.control.cholesterol.anus/g' *
+rename 's/_Cohort1_control_cholesterol.Rectal/.Cohort1.control.cholesterol.rectal/g' *
+
+rename 's/_Cohort2_control_testosterone.Vagina/.Cohort2.control.testosterone.vagina/g' *
+rename 's/_Cohort2_control_testosterone.Oral/.Cohort2.control.testosterone.oral/g' *
+rename 's/_Cohort2_control_testosterone.Cervix/.Cohort2.control.testosterone.cervix/g' *
+rename 's/_Cohort2_control_testosterone.Anus/.Cohort2.control.testosterone.anus/g' *
+rename 's/_Cohort2_control_testosterone.Rectal/.Cohort2.control.testosterone.rectal/g' *
+
+rename 's/_Cohort3_highfat_cholesterol.Vagina/.Cohort3.highfat.cholesterol.vagina/g' *
+rename 's/_Cohort3_highfat_cholesterol.Oral/.Cohort3.highfat.cholesterol.oral/g' *
+rename 's/_Cohort3_highfat_cholesterol.Cervix/.Cohort3.highfat.cholesterol.cervix/g' *
+rename 's/_Cohort3_highfat_cholesterol.Anus/.Cohort3.highfat.cholesterol.anus/g' *
+rename 's/_Cohort3_highfat_cholesterol.Rectal/.Cohort3.highfat.cholesterol.rectal/g' *
+
+rename 's/_Cohort4_highfat_testosterone.Vagina/.Cohort4.highfat.testosterone.vagina/g' *
+rename 's/_Cohort4_highfat_testosterone.Oral/.Cohort4.highfat.testosterone.oral/g' *
+rename 's/_Cohort4_highfat_testosterone.Cervix/.Cohort4.highfat.testosterone.cervix/g' *
+rename 's/_Cohort4_highfat_testosterone.Anus/.Cohort4.highfat.testosterone.anus/g' *
+rename 's/_Cohort4_highfat_testosterone.Rectal/.Cohort4.highfat.testosterone.rectal/g' *
+
+# Running trim galore (this takes a while, trims each paired sample) 
+trim_galore --q 30 --gzip --fastqc --paired *.fq -o trimmed_files_renamedbeforeTG
