@@ -2,10 +2,10 @@
 library (dada2)
 
 #set working directory
-setwd("~/PCOS Renamed Samples")
+setwd("~/ASRM PCOS Rhesus Project/")
 
 #set the correct path
-path <- "all.trimmed.validated.files.renamed.only.cohorts"
+path <- "renamed_validated_trimmed_samples"
 
 #verify the correct path is set 
 list.files(path)
