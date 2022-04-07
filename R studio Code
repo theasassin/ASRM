@@ -33,6 +33,15 @@ names(filtRs) <- sample.names
 out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen=c(240,220),
                      maxN=0, maxEE=c(2,2), truncQ=2, rm.phix=TRUE,
                      compress=TRUE, multithread=FALSE)
+                     
+#Of note, received this error message 
+# The filter removed all reads: monkeyid_trimmed_files//filtered/multimatched.validated_F_filt.fastq.gz and monkeyid_trimmed_files//filtered/multimatched.validated_R_filt.fastq.gz not written.
+# Some input samples had no reads pass the filter.
+# Warning messages:
+# 1: In file.remove(fout[[1]]) :
+  cannot remove file 'monkeyid_trimmed_files//filtered/multimatched.validated_F_filt.fastq.gz', reason 'No such file or directory'
+# 2: In file.remove(fout[[2]]) :
+  cannot remove file 'monkeyid_trimmed_files//filtered/multimatched.validated_R_filt.fastq.gz', reason 'No such file or directory'
 
 #Run the Plot Quality of the forward TruncLen Filtered samples for four samples 
 plotQualityProfile(filtFs [1:4])
