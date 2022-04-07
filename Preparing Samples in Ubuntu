@@ -351,3 +351,24 @@ rename 's/_Cohort4_highfat_testosterone.Rectal/.Cohort4.highfat.testosterone.rec
 
 # Running trim galore (this takes a while, trims each paired sample) 
 trim_galore --q 30 --gzip --fastqc --paired *.fq -o trimmed_files_renamedbeforeTG
+
+# Now move all the trimmed galore renamed with monkey IDs into own folder 
+
+Make the folder 
+/home/sassin/ASRM/Raw_Data/all_split_files mk_dir monkeyid_trimmed_files
+
+# Now CD into the folder 
+CD into ~/ASRM/Raw_Data/all_split_files/R1_R2_before_trimming/R1_R2_before_trimming_renamed/trimmed_files_renamedbeforeTG
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/monkeyid_trimmed_files/
+
+# Now you have a folder 
+cd into that folder with files 
+/home/sassin/ASRM/Raw_Data/all_split_files/monkeyid_trimmed_files/
+
+#need the file names to read as such name name name.validated_R2_001.fq.gz
+rename 's/-read_R2_val_2/.validated_R2_001/g' *
+rename 's/-read_R1_val_1/.validated_R1_001/g' *
+
+#rename the 393 Cohort five files in File Zilla to match above format 
+
+
