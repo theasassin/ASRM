@@ -74,9 +74,11 @@ derepRs <- derepFastq(filtRs[exists], verbose=TRUE)
 names(derepFs) <- sample.names[exists]
 names(derepRs) <- sample.names[exists]
 
-#Sample Inference of the derep forward samples no pooling 
-dadaFs <- dada(derepFs, err=errF, multithread=TRUE)
+#Sample Inference of the derep forward samples pseudo pooling  
+dadaFs <- dada(derepFs, err=errF, pool="pseudo", multithread=48)
 
+#sample inference of the derep reverse samples pseudo pooling
+dadaRs <- dada(derepRs, err=errR, pool="pseudo", multithread=48)
 
 #inspecting the dada-class object
 dadaFs[[1]]
