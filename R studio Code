@@ -154,20 +154,23 @@ samples.out <- rownames(seqtab.nochim)
 #Names of subjects 
 subject.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 2)
 
+#Names of monkeys
+monkey.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 3)
+
 #Names of Cohorts
-cohort.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 3)
+cohort.numbers <- sapply(strsplit(samples.out, "[.]"), `[`, 4)
 
 #Names of diet treatment 
-diet.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 4)
+diet.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 5)
 
 #Names of hormone treatment 
-hormone.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 5)
+hormone.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 6)
 
 #Names of body sites 
-body.site <- sapply(strsplit(samples.out,"[.]"), `[`, 6)
+body.site <- sapply(strsplit(samples.out,"[.]"), `[`, 7)
 
 #Make our data frame 
-samdf <- data.frame(Subject=subject.numbers, Cohort=cohort.numbers, Diet=diet.treatment, Hormone=hormone.treatment, Site=body.site)
+samdf <- data.frame(Subject=subject.numbers, MonkeyID=monkey.numbers, Cohort=cohort.numbers, Diet=diet.treatment, Hormone=hormone.treatment, Site=body.site)
 rownames(samdf) <- samples.out
 
 #Construct our Phyloseq object 
