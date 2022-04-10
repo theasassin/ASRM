@@ -1,0 +1,28 @@
+#Login in AagaardLab2
+
+# create a CCRM_phase_MonkeyID_trimmed_files directory for CCRM phase data 
+mkdir CCRM_Menses
+mkdir CCRM_Follicular
+mkdir CCRM_Luteal
+mkdir CCRM_Cesarean
+mkdir CCRM_None
+
+# copy the previously updated menses cycle samples in a CCRM_Menses subdirectory in the above directory 
+cd ~/ASRM/Raw_Data/all_split_files/phase_monkeyid_trimmed_files/Menses
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/CCRM_Menses
+
+#copy the previously updated luteal cycle samples in a CCRM_Follicular subdirectory (since I had reversed the two before we had the metadata key) 
+cd ~/ASRM/Raw_Data/all_split_files/phase_monkeyid_trimmed_files/Luteal
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/CCRM_Follicular
+
+# CD in the CCRM Follicular file and see the luetal files and rename them follicular 
+rename 's/luteal.validated_R1.001.fq.gz/follicular.validated_R1.001.fq.gz/g' *
+rename 's/luteal.validated_R2.001.fq.gz/follicular.validated_R2.001.fq.gz/g' *
+
+# copy the previously updated follicular cycle samples into a CCRM_Luteal subdirectory (again two were reversed before the metadata key) 
+cd ~/ASRM/Raw_Data/all_split_files/phase_monkeyid_trimmed_files/Follicular
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/CCRM_Luteal
+
+# CD in the CCRM Luteal file and see the follicular files and rename them luteal 
+rename 's/follicular.validated_R1.001.fq.gz/luteal.validated_R1.001.fq.gz/g' *
+rename 's/follicular.validated_R2.001.fq.gz/luteal.validated_R2.001.fq.gz/g' *
