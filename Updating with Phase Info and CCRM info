@@ -26,3 +26,33 @@ cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed
 # CD in the CCRM Luteal file and see the follicular files and rename them luteal 
 rename 's/follicular.validated_R1.001.fq.gz/luteal.validated_R1.001.fq.gz/g' *
 rename 's/follicular.validated_R2.001.fq.gz/luteal.validated_R2.001.fq.gz/g' *
+
+# Use Filezilla to copy samples 225 to 288 to the CCRM_Cesarean subdirectory and rename them to include cesarean
+
+# CD into the CCRM Cesarean File 
+rename 's/none.validated_R1.001.fq.gz/cesarean.validated_R1.001.fq.gz/g' *
+rename 's/none.validated_R2.001.fq.gz/cesarean.validated_R2.001.fq.gz/g' *
+
+#Use Filezilla to copy all remaining samples from phase None subdirectory (delting 225-288) and place into CCRM_None
+
+#Use Filezilla to update names on all samples 401-503 ith appropriate phase using Excel sheet as key 
+
+#copy all of the files with phase info to the directory home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/all_CCRMfiles_withphases
+
+#CCRM_Cesarean 
+cd /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/CCRM_Cesarean
+cp *fq.gz /home/sassin/ASRM/Raw_Data/all_split_files/CCRM_phase_monkeyid_trimmed_files/all_CCRMfiles_withphases
+
+#Do the same for 
+#CCRM_Follicular 
+#CCRM_Luteal
+#CCRM_Menses
+#CCRM_None_withoutsamples401_to_503
+#CCRM_phase_Samples400_503_renamed_with_phase
+
+
+
+
+
+
+
