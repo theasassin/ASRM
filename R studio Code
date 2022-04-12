@@ -138,6 +138,15 @@ write.table(track, "Renamed-cohortsonly-data-read-count-tracking.tsv", quote=FAL
 #### continuing via the DADA2 Tutorial pipeline ---> skip to astrobiomike portion if you want to use decipher  
 taxa <- assignTaxonomy(seqtab.nochim, "silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
 
+#error message 
+# Warning messages:
+#1: In UseMethod("depth") :
+ # no applicable method for 'depth' applied to an object of class "NULL"
+#2: In UseMethod("depth") :
+ # no applicable method for 'depth' applied to an object of class "NULL"
+#3: In UseMethod("depth") :
+ # no applicable method for 'depth' applied to an object of class "NULL"
+
 #Inspecting the taxonomic assignments 
 taxa.print <- taxa # Removing sequence rownames for display only
 rownames(taxa.print) <- NULL
@@ -173,8 +182,11 @@ hormone.treatment <- sapply(strsplit(samples.out,"[.]"), `[`, 6)
 #Names of body sites 
 body.site <- sapply(strsplit(samples.out,"[.]"), `[`, 7)
 
+#Names of cycle phase 
+cycle.phase <- sapply(strsplit(samples.out,"[.]"), `[`, 8)
+
 #Make our data frame 
-samdf <- data.frame(Subject=subject.numbers, MonkeyID=monkey.numbers, Cohort=cohort.numbers, Diet=diet.treatment, Hormone=hormone.treatment, Site=body.site)
+samdf <- data.frame(Subject=subject.numbers, MonkeyID=monkey.numbers, Cohort=cohort.numbers, Diet=diet.treatment, Hormone=hormone.treatment, Site=body.site, Phase=cycle.phase)
 rownames(samdf) <- samples.out
 
 #Construct our Phyloseq object 
