@@ -278,3 +278,18 @@ colnames(asv_tax) <- ranks
 rownames(asv_tax) <- gsub(pattern=">", replacement="", x=asv_headers)
 
 write.table(asv_tax, "ASVs_taxonomy.tsv", sep = "\t", quote=F, col.names=NA)
+
+#of note, did not perform decontam. skip to next steps 
+
+#make count tab and tax tables 
+count_tab <- read.table("ASVs_counts.tsv", header=T, row.names=1,
++                         check.names=F, sep="\t")
+tax_tab <- as.matrix(read.table("ASVs_taxonomy.tsv", header=T,
++                                 row.names=1, check.names=F, sep="\t"))
+
+# Create a sample info tab using a TSV file of the samples and variables 
+sample_info_tab <- read.table("ccrm.tsv", header=T, row.names=1,
++                               check.names=F, sep="\t")
+
+#add color to cohort 
+> sample_info_tab$Cohort <- as.character(sample_info_tab$Cohort)
