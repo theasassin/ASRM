@@ -288,8 +288,21 @@ tax_tab <- as.matrix(read.table("ASVs_taxonomy.tsv", header=T,
                                 row.names=1, check.names=F, sep="\t"))
 
 # Create a sample info tab using a TSV file of the samples and variables 
-sample_info_tab <- read.table("ccrmtsv.tsv", header=T, row.names=1,
+sample_info_tab <- read.table("ccrm504.tsv", header=T, row.names=1,
 check.names=F, sep="\t")
 
 #add color to cohort 
 sample_info_tab$Cohort <- as.character(sample_info_tab$Cohort)
+
+deseq_counts <- DESeqDataSetFromMatrix(count_tab, colData = sample_info_tab, design = ~Phase)
+
+deseq_counts_vst <- varianceStabilizingTransformation(deseq_counts)
+    # NOTE: If you get this error here with your dataset: "Error in
+    # estimateSizeFactorsForMatrix(counts(object), locfunc =locfunc, : every
+    # gene contains at least one zero, cannot compute log geometric means", that
+    # can be because the count table is sparse with many zeroes, which is common
+    # with marker-gene surveys. In that case you'd need to use a specific
+    # function first that is equipped to deal with that. You could run:
+      # deseq_counts <- estimateSizeFactors(deseq_counts, type = "poscounts")
+    # now followed by the transformation function:
+      # deseq_counts_vst <- varianceStabilizingTransformation(deseq_counts)
