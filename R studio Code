@@ -2,10 +2,10 @@
 library (dada2)
 
 #set working directory
-setwd("~/ASRM PCOS Rhesus Project/")
+setwd("/home/sassin/CCRM_PCOS_Phase")
 
 #set the correct path
-path <- "renamed_validated_trimmed_samples"
+path <- "home/sassin/CCRM_PCOS_Phase/CCRM"
 
 #verify the correct path is set 
 list.files(path)
