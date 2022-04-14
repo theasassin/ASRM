@@ -76,7 +76,7 @@ names(derepRs) <- sample.names[exists]
 
 # This time I am going to try with true pooling 
 dadaFs <- dada(derepFs, err=errF, pool=TRUE, multithread=48)
-dadaRs <- dada(derepRs, err=errF, pool=TRUE, multithread=48)
+dadaRs <- dada(derepRs, err=errR, pool=TRUE, multithread=48)
 
 #Sample Inference of the derep forward samples pseudo pooling  
 dadaFs <- dada(derepFs, err=errF, pool="pseudo", multithread=48)
