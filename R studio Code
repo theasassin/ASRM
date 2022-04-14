@@ -2,10 +2,10 @@
 library (dada2)
 
 #set working directory
-setwd("/home/sassin/CCRM_PCOS_Phase")
+setwd("/home/sassin/CCRM_PCOS_Phase_Repooled")
 
 #set the correct path
-path <- "home/sassin/CCRM_PCOS_Phase/CCRM"
+path <- "/home/sassin/CCRM_PCOS_Phase_Repooled/CCRM"
 
 #verify the correct path is set 
 list.files(path)
