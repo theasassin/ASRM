@@ -11,12 +11,8 @@ path <- "/home/sassin/CCRM_PCOS_Phase_Repooled/CCRM"
 list.files(path)
 
 # Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq (Aagaard.91.30435.Oral-read_R1_val_1.fq.gz) and SAMPLENAME_R2_001.fastq (Aagaard.91.30435.Oral-read_R2_val_2.fq.gz) 
-fnFs <- sort(list.files(path, pattern="_R1_001.fq.gz", full.names = TRUE))
-fnRs <- sort(list.files(path, pattern="_R2_001.fq.gz", full.names = TRUE))
-
-# that didnt work, use this instead 
-fnRs <- sort(list.files(path, pattern=".validated_R2.001.fq.gz", full.names=FALSE))
-fnFs <- sort(list.files(path, pattern=".validated_R1.001.fq.gz", full.names=FALSE))
+fnFs <- sort(list.files(path, pattern="validated_R1.001.fq.gz", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern="validated_R2.001.fq.gz", full.names = TRUE))
 
 # Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
