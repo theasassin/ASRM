@@ -565,6 +565,8 @@ write.table(asv_tax_no_contam, "ASVs_taxonomy-no-contam.tsv",
 count_tab <- read.table("ASVs_counts-no-contam.tsv", header=T, row.names=1,
 +                         check.names=F, sep="\t")[ , -c(393:400)] #this removes the kits in samples 393-400 
 
+tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header=T,
+           row.names=1, check.names=F, sep="\t"))
 
 # Create a sample info tab using a TSV file of the samples and variables 
 sample_info_tab <- read.table("ccrm504.tsv", header=T, row.names=1,
