@@ -444,6 +444,12 @@ deseq_counts <- estimateSizeFactors(deseq_counts, type = "poscounts")
 # now followed by the transformation function:
 deseq_counts_vst <- varianceStabilizingTransformation(deseq_counts)
 
+# and here is pulling out our transformed table
+vst_trans_count_tab <- assay(deseq_counts_vst)
+
+# and calculating our Euclidean distance matrix
+euc_dist <- dist(t(vst_trans_count_tab))
+
 # to make hierarchy cluster 
 euc_clust <- hclust(euc_dist, method="ward.D2")
 plot(euc_clust) 
