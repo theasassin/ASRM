@@ -287,262 +287,107 @@ rownames(asv_tax) <- gsub(pattern=">", replacement="", x=asv_headers)
 write.table(asv_tax, "ASVs_taxonomy.tsv", sep = "\t", quote=F, col.names=NA)
 
 #Decontam 
-> vector_for_decontam <- c(rep(FALSE, 392), rep(TRUE, 8), rep(FALSE, 104))
+> vector_for_decontam <- c(rep(FALSE, 392), rep(TRUE, 8), rep(FALSE, 103))
 > contam_df <- isContaminant(t(asv_tab), neg=vector_for_decontam)
 > table(contam_df$contaminant)
 
 #FALSE  TRUE 
-#4717   121 
+# 4572    44 
 
 contam_asvs <- row.names(contam_df[contam_df$contaminant == TRUE, ])
 contam_asvs <- row.names(contam_df[contam_df$contaminant == TRUE, ])
 asv_tax[row.names(asv_tax) %in% contam_asvs, ]
 
-# Here are the results 
-         domain      phylum             class                 order                                
-ASV_1    NA          NA                 NA                    NA                                   
-ASV_2    "Bacteria"  "Fusobacteriota"   "Fusobacteriia"       "Fusobacteriales"                    
-ASV_6    "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                  
-ASV_8    "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_10   "Bacteria"  "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                      
-ASV_12   "Bacteria"  "Firmicutes"       "Clostridia"          NA                                   
-ASV_14   NA          NA                 NA                    NA                                   
-ASV_16   "Bacteria"  "Firmicutes"       "Clostridia"          NA                                   
-ASV_17   "Bacteria"  "Campilobacterota" "Campylobacteria"     "Campylobacterales"                  
-ASV_21   "Bacteria"  "Firmicutes"       "Negativicutes"       "Veillonellales-Selenomonadales"     
-ASV_23   NA          NA                 NA                    NA                                   
-ASV_25   "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                  
-ASV_27   "Bacteria"  "Fusobacteriota"   "Fusobacteriia"       "Fusobacteriales"                    
-ASV_28   NA          NA                 NA                    NA                                   
-ASV_34   "Bacteria"  "Campilobacterota" "Campylobacteria"     "Campylobacterales"                  
-ASV_37   "Bacteria"  "Actinobacteriota" "Coriobacteriia"      "Coriobacteriales"                   
-ASV_40   "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Actinomycetales"                    
-ASV_48   "Bacteria"  NA                 NA                    NA                                   
-ASV_59   "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Actinomycetales"                    
-ASV_74   "Bacteria"  "Firmicutes"       "Negativicutes"       "Veillonellales-Selenomonadales"     
-ASV_96   "Bacteria"  "Firmicutes"       "Negativicutes"       "Veillonellales-Selenomonadales"     
-ASV_102  "Bacteria"  "Firmicutes"       "Bacilli"             "Mycoplasmatales"                    
-ASV_112  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_122  NA          NA                 NA                    NA                                   
-ASV_127  "Bacteria"  "Firmicutes"       "Bacilli"             "Lactobacillales"                    
-ASV_129  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_140  NA          NA                 NA                    NA                                   
-ASV_150  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_151  "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_154  "Bacteria"  "Firmicutes"       NA                    NA                                   
-ASV_182  "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                  
-ASV_186  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_187  NA          NA                 NA                    NA                                   
-ASV_189  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_192  "Bacteria"  "Campilobacterota" "Campylobacteria"     "Campylobacterales"                  
-ASV_194  NA          NA                 NA                    NA                                   
-ASV_218  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_250  NA          NA                 NA                    NA                                   
-ASV_310  "Bacteria"  "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                      
-ASV_340  "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                  
-ASV_364  "Bacteria"  NA                 NA                    NA                                   
-ASV_405  "Bacteria"  "Firmicutes"       NA                    NA                                   
-ASV_426  "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_450  "Bacteria"  "Firmicutes"       "Bacilli"             "Staphylococcales"                   
-ASV_489  "Archaea"   "Thermoplasmatota" "Thermoplasmata"      "Methanomassiliicoccales"            
-ASV_535  "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_538  "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_575  NA          NA                 NA                    NA                                   
-ASV_589  "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_610  NA          NA                 NA                    NA                                   
-ASV_674  "Bacteria"  "Firmicutes"       "Bacilli"             "Lactobacillales"                    
-ASV_676  "Bacteria"  "Cyanobacteria"    "Vampirivibrionia"    "Gastranaerophilales"                
-ASV_770  "Bacteria"  "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                      
-ASV_776  "Bacteria"  NA                 NA                    NA                                   
-ASV_804  "Bacteria"  "Fibrobacterota"   "Fibrobacteria"       "Fibrobacterales"                    
-ASV_818  "Bacteria"  NA                 NA                    NA                                   
-ASV_827  "Bacteria"  "Cyanobacteria"    "Vampirivibrionia"    "Gastranaerophilales"                
-ASV_856  "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_891  "Bacteria"  "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                      
-ASV_895  "Bacteria"  "Firmicutes"       "Bacilli"             "Bacillales"                         
-ASV_991  "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_992  "Bacteria"  "Firmicutes"       "Clostridia"          "Clostridia UCG-014"                 
-ASV_1152 "Bacteria"  "Firmicutes"       "Bacilli"             "Acholeplasmatales"                  
-ASV_1203 "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_1221 "Bacteria"  "Firmicutes"       "Clostridia"          "Clostridia UCG-014"                 
-ASV_1237 "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_1262 "Bacteria"  "Firmicutes"       "Bacilli"             "Lactobacillales"                    
-ASV_1269 NA          NA                 NA                    NA                                   
-ASV_1389 "Bacteria"  "Firmicutes"       "Clostridia"          "Clostridia UCG-014"                 
-ASV_1396 NA          NA                 NA                    NA                                   
-ASV_1398 "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_1490 NA          NA                 NA                    NA                                   
-ASV_1499 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_1508 NA          NA                 NA                    NA                                   
-ASV_1514 "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                  
-ASV_1521 "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_1524 "Bacteria"  "Firmicutes"       "Clostridia"          NA                                   
-ASV_1539 "Bacteria"  "Firmicutes"       "Bacilli"             "Erysipelotrichales"                 
-ASV_1567 "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_1576 "Bacteria"  "Firmicutes"       "Bacilli"             "Lactobacillales"                    
-ASV_1634 "Bacteria"  "Firmicutes"       "Bacilli"             "Erysipelotrichales"                 
-ASV_1637 "Bacteria"  NA                 NA                    NA                                   
-ASV_1651 NA          NA                 NA                    NA                                   
-ASV_1654 NA          NA                 NA                    NA                                   
-ASV_1664 "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_1668 "Bacteria"  "Cyanobacteria"    "Cyanobacteriia"      "Chloroplast"                        
-ASV_1682 "Bacteria"  "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                  
-ASV_1708 "Bacteria"  NA                 NA                    NA                                   
-ASV_1716 "Bacteria"  NA                 NA                    NA                                   
-ASV_1795 NA          NA                 NA                    NA                                   
-ASV_1830 "Bacteria"  "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales"
-ASV_1835 NA          NA                 NA                    NA                                   
-ASV_1846 NA          NA                 NA                    NA                                   
-ASV_1854 "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_1861 "Bacteria"  "Cyanobacteria"    "Vampirivibrionia"    "Gastranaerophilales"                
-ASV_1865 "Bacteria"  "Proteobacteria"   "Gammaproteobacteria" "Pseudomonadales"                    
-ASV_1871 "Bacteria"  "Firmicutes"       "Clostridia"          "Clostridia UCG-014"                 
-ASV_1886 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_1974 NA          NA                 NA                    NA                                   
-ASV_1985 "Bacteria"  "Firmicutes"       "Clostridia"          NA                                   
-ASV_2023 NA          NA                 NA                    NA                                   
-ASV_2057 NA          NA                 NA                    NA                                   
-ASV_2086 "Bacteria"  "Firmicutes"       "Clostridia"          NA                                   
-ASV_2102 "Bacteria"  "Firmicutes"       "Clostridia"          "Lachnospirales"                     
-ASV_2139 "Bacteria"  "Proteobacteria"   "Gammaproteobacteria" "Burkholderiales"                    
-ASV_2143 "Bacteria"  "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                      
-ASV_2150 "Bacteria"  "Cyanobacteria"    "Cyanobacteriia"      "Chloroplast"                        
-ASV_2223 "Bacteria"  "Firmicutes"       "Bacilli"             "Erysipelotrichales"                 
-ASV_2233 "Bacteria"  "Cyanobacteria"    "Cyanobacteriia"      "Chloroplast"                        
-ASV_2234 "Bacteria"  "Proteobacteria"   "Gammaproteobacteria" "Burkholderiales"                    
-ASV_2240 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_2267 "Bacteria"  "Firmicutes"       "Clostridia"          "Oscillospirales"                    
-ASV_2274 "Bacteria"  NA                 NA                    NA                                   
-ASV_2275 "Bacteria"  "Firmicutes"       NA                    NA                                   
-ASV_2278 "Bacteria"  "Firmicutes"       "Clostridia"          "Monoglobales"                       
-ASV_2282 NA          NA                 NA                    NA                                   
-ASV_2329 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_2334 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_2508 "Eukaryota" NA                 NA                    NA                                   
-ASV_2640 "Bacteria"  "Firmicutes"       "Bacilli"             "RF39"                               
-ASV_2718 "Bacteria"  "Proteobacteria"   "Alphaproteobacteria" "Rickettsiales"                      
-         family                                  genus                         species
-ASV_1    NA                                      NA                            NA     
-ASV_2    "Leptotrichiaceae"                      NA                            NA     
-ASV_6    "Bifidobacteriaceae"                    "Gardnerella"                 NA     
-ASV_8    "Lachnospiraceae"                       NA                            NA     
-ASV_10   "Porphyromonadaceae"                    "Porphyromonas"               NA     
-ASV_12   NA                                      NA                            NA     
-ASV_14   NA                                      NA                            NA     
-ASV_16   "Hungateiclostridiaceae"                "Fastidiosipila"              NA     
-ASV_17   "Campylobacteraceae"                    "Campylobacter"               NA     
-ASV_21   "Veillonellaceae"                       "Dialister"                   NA     
-ASV_23   NA                                      NA                            NA     
-ASV_25   "Bifidobacteriaceae"                    "Gardnerella"                 NA     
-ASV_27   "Fusobacteriaceae"                      "Fusobacterium"               NA     
-ASV_28   NA                                      NA                            NA     
-ASV_34   "Campylobacteraceae"                    "Campylobacter"               NA     
-ASV_37   "Atopobiaceae"                          "Atopobium"                   NA     
-ASV_40   "Actinomycetaceae"                      "Mobiluncus"                  NA     
-ASV_48   NA                                      NA                            NA     
-ASV_59   "Actinomycetaceae"                      "Mobiluncus"                  NA     
-ASV_74   "Veillonellaceae"                       "Dialister"                   NA     
-ASV_96   "Veillonellaceae"                       "Megasphaera"                 NA     
-ASV_102  "Mycoplasmataceae"                      "Mycoplasma"                  NA     
-ASV_112  NA                                      "Anaerococcus"                NA     
-ASV_122  NA                                      NA                            NA     
-ASV_127  "Carnobacteriaceae"                     NA                            NA     
-ASV_129  NA                                      NA                            NA     
-ASV_140  NA                                      NA                            NA     
-ASV_150  NA                                      "Parvimonas"                  NA     
-ASV_151  "Lachnospiraceae"                       NA                            NA     
-ASV_154  NA                                      NA                            NA     
-ASV_182  "Corynebacteriaceae"                    "Corynebacterium"             NA     
-ASV_186  NA                                      "Peptoniphilus"               NA     
-ASV_187  NA                                      NA                            NA     
-ASV_189  NA                                      "Anaerococcus"                NA     
-ASV_192  "Campylobacteraceae"                    "Campylobacter"               NA     
-ASV_194  NA                                      NA                            NA     
-ASV_218  NA                                      "Peptoniphilus"               NA     
-ASV_250  NA                                      NA                            NA     
-ASV_310  "Porphyromonadaceae"                    "Porphyromonas"               NA     
-ASV_340  "Bifidobacteriaceae"                    "Gardnerella"                 NA     
-ASV_364  NA                                      NA                            NA     
-ASV_405  NA                                      NA                            NA     
-ASV_426  NA                                      "Ezakiella"                   NA     
-ASV_450  "Staphylococcaceae"                     "Staphylococcus"              NA     
-ASV_489  "Methanomethylophilaceae"               NA                            NA     
-ASV_535  "Ruminococcaceae"                       "Ruminococcus"                NA     
-ASV_538  "Lachnospiraceae"                       NA                            NA     
-ASV_575  NA                                      NA                            NA     
-ASV_589  "Oscillospiraceae"                      "UCG-005"                     NA     
-ASV_610  NA                                      NA                            NA     
-ASV_674  "Aerococcaceae"                         "Aerococcus"                  NA     
-ASV_676  NA                                      NA                            NA     
-ASV_770  "Bacteroidales RF16 group"              NA                            NA     
-ASV_776  NA                                      NA                            NA     
-ASV_804  "Fibrobacteraceae"                      "Fibrobacter"                 NA     
-ASV_818  NA                                      NA                            NA     
-ASV_827  NA                                      NA                            NA     
-ASV_856  "Lachnospiraceae"                       NA                            NA     
-ASV_891  "Bacteroidales RF16 group"              NA                            NA     
-ASV_895  "Bacillaceae"                           NA                            NA     
-ASV_991  "Ruminococcaceae"                       "[Eubacterium] siraeum group" NA     
-ASV_992  NA                                      NA                            NA     
-ASV_1152 "Acholeplasmataceae"                    "Anaeroplasma"                NA     
-ASV_1203 NA                                      NA                            NA     
-ASV_1221 NA                                      NA                            NA     
-ASV_1237 "Lachnospiraceae"                       NA                            NA     
-ASV_1262 "Aerococcaceae"                         "Facklamia"                   NA     
-ASV_1269 NA                                      NA                            NA     
-ASV_1389 NA                                      NA                            NA     
-ASV_1396 NA                                      NA                            NA     
-ASV_1398 "Lachnospiraceae"                       "Lachnospiraceae UCG-003"     NA     
-ASV_1490 NA                                      NA                            NA     
-ASV_1499 NA                                      NA                            NA     
-ASV_1508 NA                                      NA                            NA     
-ASV_1514 "Bifidobacteriaceae"                    "Bifidobacterium"             NA     
-ASV_1521 "Ruminococcaceae"                       NA                            NA     
-ASV_1524 NA                                      NA                            NA     
-ASV_1539 "Erysipelatoclostridiaceae"             "UCG-004"                     NA     
-ASV_1567 "Ruminococcaceae"                       "Ruminococcus"                NA     
-ASV_1576 "Lactobacillaceae"                      "Lactobacillus"               NA     
-ASV_1634 "Erysipelatoclostridiaceae"             "UCG-004"                     NA     
-ASV_1637 NA                                      NA                            NA     
-ASV_1651 NA                                      NA                            NA     
-ASV_1654 NA                                      NA                            NA     
-ASV_1664 NA                                      NA                            NA     
-ASV_1668 NA                                      NA                            NA     
-ASV_1682 "Corynebacteriaceae"                    NA                            NA     
-ASV_1708 NA                                      NA                            NA     
-ASV_1716 NA                                      NA                            NA     
-ASV_1795 NA                                      NA                            NA     
-ASV_1830 "Anaerovoracaceae"                      "Family XIII AD3011 group"    NA     
-ASV_1835 NA                                      NA                            NA     
-ASV_1846 NA                                      NA                            NA     
-ASV_1854 "Lachnospiraceae"                       "Anaerosporobacter"           NA     
-ASV_1861 NA                                      NA                            NA     
-ASV_1865 "Moraxellaceae"                         "Psychrobacter"               NA     
-ASV_1871 NA                                      NA                            NA     
-ASV_1886 NA                                      NA                            NA     
-ASV_1974 NA                                      NA                            NA     
-ASV_1985 NA                                      NA                            NA     
-ASV_2023 NA                                      NA                            NA     
-ASV_2057 NA                                      NA                            NA     
-ASV_2086 NA                                      NA                            NA     
-ASV_2102 "Lachnospiraceae"                       NA                            NA     
-ASV_2139 "Comamonadaceae"                        NA                            NA     
-ASV_2143 "Rikenellaceae"                         "Rikenellaceae RC9 gut group" NA     
-ASV_2150 NA                                      NA                            NA     
-ASV_2223 "Erysipelatoclostridiaceae"             "UCG-004"                     NA     
-ASV_2233 NA                                      NA                            NA     
-ASV_2234 "Oxalobacteraceae"                      "Massilia"                    NA     
-ASV_2240 NA                                      NA                            NA     
-ASV_2267 "[Eubacterium] coprostanoligenes group" NA                            NA     
-ASV_2274 NA                                      NA                            NA     
-ASV_2275 NA                                      NA                            NA     
-ASV_2278 "Monoglobaceae"                         "Monoglobus"                  NA     
-ASV_2282 NA                                      NA                            NA     
-ASV_2329 NA                                      NA                            NA     
-ASV_2334 NA                                      NA                            NA     
-ASV_2508 NA                                      NA                            NA     
-ASV_2640 NA                                      NA                            NA     
-ASV_2718 "Mitochondria"                          NA                            NA    
+#        domain     phylum             class                 order                                 family                 genus                     
+ASV_8    "Bacteria" "Firmicutes"       "Clostridia"          "Lachnospirales"                      "Lachnospiraceae"      NA                        
+ASV_12   "Bacteria" NA                 NA                    NA                                    NA                     NA                        
+ASV_70   "Bacteria" "Firmicutes"       "Bacilli"             "Lactobacillales"                     "Streptococcaceae"     NA                        
+ASV_75   "Bacteria" "Firmicutes"       "Bacilli"             "Staphylococcales"                    "Staphylococcaceae"    "Staphylococcus"          
+ASV_758  "Bacteria" "Fusobacteriota"   "Fusobacteriia"       "Fusobacteriales"                     "Fusobacteriaceae"     "Fusobacterium"           
+ASV_916  "Bacteria" "Firmicutes"       "Bacilli"             "Bacillales"                          "Bacillaceae"          NA                        
+ASV_1188 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Actinomycetales"                     "Actinomycetaceae"     "Actinomyces"             
+ASV_1241 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Micrococcales"                       "Micrococcaceae"       "Rothia"                  
+ASV_1291 "Bacteria" "Cyanobacteria"    "Cyanobacteriia"      "Chloroplast"                         NA                     NA                        
+ASV_1429 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Burkholderiales"                     "Comamonadaceae"       NA                        
+ASV_1562 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                   "Corynebacteriaceae"   "Corynebacterium"         
+ASV_1903 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                   "Bifidobacteriaceae"   "Bifidobacterium"         
+ASV_2176 "Bacteria" "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                       "Bacteroidaceae"       "Bacteroides"             
+ASV_2487 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Pasteurellales"                      "Pasteurellaceae"      NA                        
+ASV_2664 "Bacteria" "Firmicutes"       "Bacilli"             "Staphylococcales"                    "Staphylococcaceae"    "Staphylococcus"          
+ASV_2714 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Pseudomonadales"                     "Moraxellaceae"        "Acinetobacter"           
+ASV_2724 "Bacteria" "Firmicutes"       "Bacilli"             "Lactobacillales"                     "Streptococcaceae"     "Streptococcus"           
+ASV_3064 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" NA                                    NA                     NA                        
+ASV_3108 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Pseudomonadales"                     "Pseudomonadaceae"     "Pseudomonas"             
+ASV_3142 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Burkholderiales"                     "Neisseriaceae"        NA                        
+ASV_3310 "Bacteria" "Firmicutes"       "Bacilli"             "Lactobacillales"                     "Lactobacillaceae"     "Lactobacillus"           
+ASV_3321 "Bacteria" "Campilobacterota" "Campylobacteria"     "Campylobacterales"                   "Campylobacteraceae"   "Campylobacter"           
+ASV_3459 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                   "Corynebacteriaceae"   "Lawsonella"              
+ASV_3510 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Rhizobiales"                         "Xanthobacteraceae"    NA                        
+ASV_3511 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Micrococcales"                       "Intrasporangiaceae"   NA                        
+ASV_3540 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Caulobacterales"                     "Caulobacteraceae"     "Brevundimonas"           
+ASV_3666 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                   "Corynebacteriaceae"   "Turicella"               
+ASV_3748 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" "Burkholderiales"                     "Comamonadaceae"       NA                        
+ASV_3804 "Bacteria" "Fusobacteriota"   "Fusobacteriia"       "Fusobacteriales"                     "Leptotrichiaceae"     "Leptotrichia"            
+ASV_3847 "Bacteria" "Bacteroidota"     "Bacteroidia"         "Bacteroidales"                       "Rikenellaceae"        "Alistipes"               
+ASV_3861 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Corynebacteriales"                   "Mycobacteriaceae"     "Mycobacterium"           
+ASV_3917 "Bacteria" "Proteobacteria"   "Gammaproteobacteria" NA                                    NA                     NA                        
+ASV_4106 "Bacteria" NA                 NA                    NA                                    NA                     NA                        
+ASV_4133 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Bifidobacteriales"                   "Bifidobacteriaceae"   "Scardovia"               
+ASV_4219 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Rhizobiales"                         "Xanthobacteraceae"    "Pseudolabrys"            
+ASV_4225 "Bacteria" "Cyanobacteria"    "Vampirivibrionia"    "Obscuribacterales"                   "Obscuribacteraceae"   "Candidatus Obscuribacter"
+ASV_4273 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Sphingomonadales"                    "Sphingomonadaceae"    NA                        
+ASV_4279 "Bacteria" "Bdellovibrionota" "Oligoflexia"         "0319-6G20"                           NA                     NA                        
+ASV_4310 "Bacteria" "Actinobacteriota" "Thermoleophilia"     "Solirubrobacterales"                 "Solirubrobacteraceae" "Solirubrobacter"         
+ASV_4311 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Sphingomonadales"                    "Sphingomonadaceae"    "Altererythrobacter"      
+ASV_4314 "Bacteria" "Firmicutes"       "Clostridia"          "Peptostreptococcales-Tissierellales" NA                     "Anaerococcus"            
+ASV_4352 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Micrococcales"                       "Cellulomonadaceae"    "Cellulomonas"            
+ASV_4432 "Bacteria" "Proteobacteria"   "Alphaproteobacteria" "Sphingomonadales"                    "Sphingomonadaceae"    NA                        
+ASV_4462 "Bacteria" "Actinobacteriota" "Actinobacteria"      "Propionibacteriales"                 "Propionibacteriaceae" "Cutibacterium"           
+         species
+ASV_8    NA     
+ASV_12   NA     
+ASV_70   NA     
+ASV_75   NA     
+ASV_758  NA     
+ASV_916  NA     
+ASV_1188 NA     
+ASV_1241 NA     
+ASV_1291 NA     
+ASV_1429 NA     
+ASV_1562 NA     
+ASV_1903 NA     
+ASV_2176 NA     
+ASV_2487 NA     
+ASV_2664 NA     
+ASV_2714 NA     
+ASV_2724 NA     
+ASV_3064 NA     
+ASV_3108 NA     
+ASV_3142 NA     
+ASV_3310 NA     
+ASV_3321 NA     
+ASV_3459 NA     
+ASV_3510 NA     
+ASV_3511 NA     
+ASV_3540 NA     
+ASV_3666 NA     
+ASV_3748 NA     
+ASV_3804 NA     
+ASV_3847 NA     
+ASV_3861 NA     
+ASV_3917 NA     
+ASV_4106 NA     
+ASV_4133 NA     
+ASV_4219 NA     
+ASV_4225 NA     
+ASV_4273 NA     
+ASV_4279 NA     
+ASV_4310 NA     
+ASV_4311 NA     
+ASV_4314 NA     
+ASV_4352 NA     
+ASV_4432 NA     
+ASV_4462 NA   
 
 contam_indices <- which(asv_fasta %in% paste0(">", contam_asvs))
 dont_want <- sort(c(contam_indices, contam_indices + 1))
