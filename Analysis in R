@@ -1,0 +1,141 @@
+# this is the code that michael helped me make. It is a combined PCoA plot and a relative abundance chart 
+
+#load the library 
+library(microbiome)
+
+
+#making a PCOA out of my phlyoseqs 
+plot_ordination(vst_physeq, vst_pcoa, color="Cohort") + 
+  geom_point(size=1) + labs(col="Cohort") + 
+  geom_text(aes(label=sample_info_tab$Site, hjust=0.3, vjust=-0.4))  + 
+  coord_fixed(sqrt(eigen_vals[2]/eigen_vals[1])) + ggtitle("PCoA") + 
+  scale_color_brewer(palette = "Set1") +
+  facet_grid(Phase+Site~.)
+  #theme_bw() + theme(legend.position="none")
+
+
+#making a color palatte for me to use 
+library(RColorBrewer)
+display.brewer.all()
+mypal=c("red","green", "blue")
+library(scales)
+show_col(mypal)
+
+#making my sample info tab a factor so it works in the relative abundance chart 
+sample_info_tab$Cohort<- factor(sample_info_tab$Cohort)
+sample_info_tab_phy<- sample_data(sample_info_tab)
+
+
+#now making a phyloseq with the new sample info tab and folding back into the genus level 
+physeq<- phyloseq(count_tab_phy, tax_tab_phy, sample_info_tab_phy)
+physeq_genus <- tax_glom(physeq = physeq,taxrank = "genus", NArm = TRUE)
+physeq_genus_core<- core(x = physeq_genus, detection = 1/100, prevalence = 1/100)
+physeq_genus_core_comp <- transform(x = physeq_genus_core, transform = "compositional")
+
+#this is my relative abundance chart 
+plot_composition(x=physeq_genus_core_comp, otu.sort = "abundance", x.label = "Phase", plot.type = "barplot", verbose = TRUE, average_by = "Cohort") + scale_fill_brewer(palette = "Set1")
+
+============================================================================================================================================================
+
+# this is me playing around with different formats of PCOA plots 
+
+#making a PCOA out of my phlyoseqs 
+plot_ordination(vst_physeq, vst_pcoa, color="Cohort", shape = "Phase") + 
+  geom_point(size=1) + labs(col="Cohort") + 
+  #geom_text(aes(label=sample_info_tab$Site, hjust=0.3, vjust=-0.4))  #+ 
+  coord_fixed(sqrt(eigen_vals[2]/eigen_vals[1])) + ggtitle("PCoA") + 
+  scale_color_brewer(palette = "Set1") +
+  facet_grid(~sample_info_tab$Site, 3)
+#theme_bw() + theme(legend.position="none")
+
+plot_ordination(vst_physeq, vst_pcoa, color="Cohort", shape = "Phase") + 
+  geom_point(size=1) + labs(col="Cohort") + 
+  #geom_text(aes(label=sample_info_tab$Site, hjust=0.3, vjust=-0.4))#+
+  coord_fixed(sqrt(eigen_vals[2]/eigen_vals[1])) + ggtitle("PCoA") + 
+  scale_color_brewer(palette = "Set1") +
+  facet_grid(Phase~Site)
+#theme_bw() + theme(legend.position="none")
+
+===========================================================================================================================================
+This is my Bray- Curtis plots 
+
+# Transform data to proportions as appropriate for Bray-Curtis distances
+ps.prop <- transform_sample_counts(vst_physeq, function(otu) otu/sum(otu))
+ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
+
+# Bray Curtis by Cohort 
+plot_ordination(ps.prop, ord.nmds.bray, color="Cohort", title="Bray NMDS")
+# Bray Curtis by Cohort 
+plot_ordination(ps.prop, ord.nmds.bray, color="Phase", title="Bray NMDS")
+# Bray Curtis by Site
+plot_ordination(ps.prop, ord.nmds.bray, color="Site", title="Bray NMDS")
+
+===========================================================================================================================================
+
+This is how I made new data directories and calculated PERMANOVA values 
+# setting up helpful variables 
+# cohort variables 
+Cohort1_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Cohort == "Cohort1"]
+Cohort2_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Cohort == "Cohort2"]
+Cohort3_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Cohort == "Cohort3"]
+Cohort4_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Cohort == "Cohort4"]
+
+# body site variables 
+Oral_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "oral"]
+Vagina_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "vagina"]
+Cervix_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "cervix"]
+Anus_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "anus"]
+Rectal_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "rectal"]
+
+# new distance matrix of only Cervical samples 
+Cervix_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Cervix_sample_IDs]))
+
+# and now making a sample info table with just the cervical samples
+Cervix_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Cervix_sample_IDs, ]
+
+anova(betadisper(Cervix_euc_dist, Cervix_sample_info_tab$Cohort))
+adonis(Cervix_euc_dist~Cervix_sample_info_tab$Cohort)
+
+#Call:
+# adonis(formula = Cervix_euc_dist ~ Cervix_sample_info_tab$Cohort) 
+
+# Permutation: free
+# Number of permutations: 999
+
+#Terms added sequentially (first to last)
+
+#Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+#Cervix_sample_info_tab$Cohort   3     27954  9318.1  1.8053 0.02874  0.001 ***
+#Residuals                     183    944555  5161.5         0.97126           
+#Total                         186    972509                 1.00000           
+---
+#Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+# making our phyloseq object with transformed table
+cervix_vst_count_phy <- otu_table(vst_trans_count_tab[, colnames(vst_trans_count_tab) %in% Cervix_sample_IDs], taxa_are_rows=T)
+cervix_sample_info_tab_phy <- sample_data(Cervix_sample_info_tab)
+cervix_vst_physeq <- phyloseq(cervix_vst_count_phy, cervix_sample_info_tab_phy)
+
+# generating and visualizing the PCoA with phyloseq
+cervix_vst_pcoa <- ordinate(cervix_vst_physeq, method="MDS", distance="euclidean")
+basalt_eigen_vals <- cervix_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
+
+# and making our new ordination of just basalts with our adonis statistic
+plot_ordination(cervix_vst_physeq, cervix_vst_pcoa, color="Cohort", shape="Phase") + 
+  labs(col="type") + geom_point(size=1) + 
+  # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
+  #annotate("text", x=25, y=68, label="All Cohorts") +
+  annotate("text", x=25, y=62, label="Permutational ANOVA= 0.001") + 
+  coord_fixed(sqrt(basalt_eigen_vals[2]/basalt_eigen_vals[1])) + ggtitle("PCoA - Cervix only") + 
+  scale_color_brewer(palette = "Set1")
+  # scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
+  # theme_bw() + theme(legend.position="none")
+
+
+
+
+
+
+
+
