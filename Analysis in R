@@ -72,7 +72,6 @@ plot_ordination(ps.prop, ord.nmds.bray, color="Site", title="Bray NMDS")
 
 ===========================================================================================================================================
 
-This is how I made new data directories and calculated PERMANOVA values 
 # setting up helpful variables 
 # cohort variables 
 Cohort1_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Cohort == "Cohort1"]
@@ -86,6 +85,8 @@ Vagina_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "vagina"
 Cervix_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "cervix"]
 Anus_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "anus"]
 Rectal_sample_IDs <- row.names(sample_info_tab)[sample_info_tab$Site == "rectal"]
+
+# Making a PCOA of CERVIX ONLY 
 
 # new distance matrix of only Cervical samples 
 Cervix_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Cervix_sample_IDs]))
@@ -119,23 +120,211 @@ cervix_vst_physeq <- phyloseq(cervix_vst_count_phy, cervix_sample_info_tab_phy)
 
 # generating and visualizing the PCoA with phyloseq
 cervix_vst_pcoa <- ordinate(cervix_vst_physeq, method="MDS", distance="euclidean")
-basalt_eigen_vals <- cervix_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
+cervix_eigen_vals <- cervix_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just basalts with our adonis statistic
+# and making our new ordination of just Cervix  with our adonis statistic
 plot_ordination(cervix_vst_physeq, cervix_vst_pcoa, color="Cohort", shape="Phase") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
   #annotate("text", x=25, y=68, label="All Cohorts") +
   annotate("text", x=25, y=62, label="Permutational ANOVA= 0.001") + 
-  coord_fixed(sqrt(basalt_eigen_vals[2]/basalt_eigen_vals[1])) + ggtitle("PCoA - Cervix only") + 
+  coord_fixed(sqrt(cervix_eigen_vals[2]/cervix_eigen_vals[1])) + ggtitle("PCoA - Cervix only") + 
   scale_color_brewer(palette = "Set1")
   # scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
   # theme_bw() + theme(legend.position="none")
 
+# NOW MAKING PCOA OF VAGINAL ONLY SAMPLES 
+
+# new distance matrix of only Vaginal samples 
+Vagina_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Vagina_sample_IDs]))
+
+# and now making a sample info table with just the VAGINAL samples
+Vagina_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Vagina_sample_IDs, ]
+
+anova(betadisper(Vagina_euc_dist, Vagina_sample_info_tab$Cohort))
+adonis(Vagina_euc_dist~Vagina_sample_info_tab$Cohort)
+
+#Analysis of Variance Table with Beta Disper 
+# Response: Distances
+# Df Sum Sq Mean Sq F value Pr(>F)
+# Groups     3   3280 1093.18  1.4783 0.2265
+# Residuals 82  60638  739.48               
+
+# adonis(Vagina_euc_dist~Vagina_sample_info_tab$Cohort)
+# Permutation: free
+# Number of permutations: 999
+# Terms added sequentially (first to last)
+
+# Df SumsOfSqs MeanSqs F.Model     R2 Pr(>F)   
+# Vagina_sample_info_tab$Cohort  3     31424 10474.8  1.5054 0.0522  0.009 **
+# Residuals                     82    570563  6958.1         0.9478          
+# Total                         85    601987                 1.0000          
+#
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# making our phyloseq object with transformed table
+vagina_vst_count_phy <- otu_table(vst_trans_count_tab[, colnames(vst_trans_count_tab) %in% Vagina_sample_IDs], taxa_are_rows=T)
+vagina_sample_info_tab_phy <- sample_data(Vagina_sample_info_tab)
+vagina_vst_physeq <- phyloseq(vagina_vst_count_phy, vagina_sample_info_tab_phy)
+
+# generating and visualizing the PCoA with phyloseq
+vagina_vst_pcoa <- ordinate(vagina_vst_physeq, method="MDS", distance="euclidean")
+vagina_eigen_vals <- vagina_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
+
+# and making our new ordination of just Vagina with our adonis statistic
+plot_ordination(vagina_vst_physeq, vagina_vst_pcoa, color="Cohort", shape="Phase") + 
+  labs(col="type") + geom_point(size=1) + 
+  # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
+  #annotate("text", x=25, y=68, label="All Cohorts") +
+  annotate("text", x=25, y=62, label="Permutational ANOVA= 0.009") + 
+  coord_fixed(sqrt(vagina_eigen_vals[2]/vagina_eigen_vals[1])) + ggtitle("PCoA - Vagina only") + 
+  scale_color_brewer(palette = "Set1")
+# scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
+# theme_bw() + theme(legend.position="none")
+
+# NOW MAKING A PCOA OF ANUS SAMPLES 
+
+Anus_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Anus_sample_IDs]))
+Anus_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Anus_sample_IDs, ]
+
+anova(betadisper(Anus_euc_dist, Anus_sample_info_tab$Cohort))
+adonis(Anus_euc_dist~Anus_sample_info_tab$Cohort)
+# Betadisper Analysis of Variance Table
+#Response: Distances
+# Df Sum Sq Mean Sq F value    Pr(>F)    
+# Groups     3 4850.9 1616.96   10.83 7.101e-06 ***
+# Residuals 66 9854.2  149.31                      
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# adonis(Anus_euc_dist~Anus_sample_info_tab$Cohort)
+# Permutation: free
+# Number of permutations: 999
+# Terms added sequentially (first to last)
+#Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+# Anus_sample_info_tab$Cohort  3    167307   55769  3.6159 0.14116  0.001 ***
+# Residuals                   66   1017932   15423         0.85884           
+# Total                       69   1185239                 1.00000           
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 
+# making our phyloseq object with transformed table
+anus_vst_count_phy <- otu_table(vst_trans_count_tab[, colnames(vst_trans_count_tab) %in% Anus_sample_IDs], taxa_are_rows=T)
+anus_sample_info_tab_phy <- sample_data(Anus_sample_info_tab)
+anus_vst_physeq <- phyloseq(anus_vst_count_phy, anus_sample_info_tab_phy)
+
+# generating and visualizing the PCoA with phyloseq
+anus_vst_pcoa <- ordinate(anus_vst_physeq, method="MDS", distance="euclidean")
+anus_eigen_vals <- anus_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
+
+# and making our new ordination of just Vagina with our adonis statistic
+plot_ordination(anus_vst_physeq, anus_vst_pcoa, color="Cohort") + 
+  labs(col="type") + geom_point(size=1) + 
+  # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
+  #annotate("text", x=25, y=68, label="All Cohorts") +
+  annotate("text", x=25, y=62, label="Permutational ANOVA= 0.001") + 
+  coord_fixed(sqrt(anus_eigen_vals[2]/anus_eigen_vals[1])) + ggtitle("PCoA - Anus only") + 
+  scale_color_brewer(palette = "Set1")
+# scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
+# theme_bw() + theme(legend.position="none")
+
+# NOW MAKING PCOA OF ORAL SAMPLES 
+
+Oral_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Oral_sample_IDs]))
+
+# and now making a sample info table with just the oral samples
+Oral_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Oral_sample_IDs, ]
+
+anova(betadisper(Oral_euc_dist, Oral_sample_info_tab$Cohort))
+adonis(Oral_euc_dist~Oral_sample_info_tab$Cohort)
+
+#Analysis of Variance Table
+
+# Beta disperser Response: Distances
+# Df Sum Sq Mean Sq F value Pr(>F)
+# Groups      3   1586  528.55  0.7443  0.528
+# Residuals 108  76693  710.12               
+# adonis(Oral_euc_dist~Oral_sample_info_tab$Cohort)
+
+# Call:
+#donis(formula = Oral_euc_dist ~ Oral_sample_info_tab$Cohort) 
+
+#Permutation: free
+#Number of permutations: 999
+
+#Terms added sequentially (first to last)
+
+# Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)
+# Oral_sample_info_tab$Cohort   3     16011  5337.0  1.1447 0.03082  0.132
+# Residuals                   108    503520  4662.2         0.96918       
+# Total                       111    519531                 1.00000  
+
+# making our phyloseq object with transformed table
+oral_vst_count_phy <- otu_table(vst_trans_count_tab[, colnames(vst_trans_count_tab) %in% Oral_sample_IDs], taxa_are_rows=T)
+oral_sample_info_tab_phy <- sample_data(Oral_sample_info_tab)
+oral_vst_physeq <- phyloseq(oral_vst_count_phy, oral_sample_info_tab_phy)
+
+# generating and visualizing the PCoA with phyloseq
+oral_vst_pcoa <- ordinate(oral_vst_physeq, method="MDS", distance="euclidean")
+oral_eigen_vals <- oral_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
+
+# and making our new ordination of just Vagina with our adonis statistic
+plot_ordination(oral_vst_physeq, oral_vst_pcoa, color="Cohort") + 
+  labs(col="type") + geom_point(size=1) + 
+  # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
+  #annotate("text", x=25, y=68, label="All Cohorts") +
+  annotate("text", x=25, y=62, label="Permutational ANOVA= 0.132") + 
+  coord_fixed(sqrt(oral_eigen_vals[2]/oral_eigen_vals[1])) + ggtitle("PCoA - Oral only") + 
+  scale_color_brewer(palette = "Set1")
+# scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
+# theme_bw() + theme(legend.position="none")
+
+# NOW MAKING PCOA OF Rectal SAMPLES 
+
+Rectal_euc_dist <- dist(t(vst_trans_count_tab[ , colnames(vst_trans_count_tab) %in% Rectal_sample_IDs]))
+
+# and now making a sample info table with just the oral samples
+Rectal_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Rectal_sample_IDs, ]
+
+anova(betadisper(Rectal_euc_dist, Rectal_sample_info_tab$Cohort))
+adonis(Rectal_euc_dist~Rectal_sample_info_tab$Cohort)
+
+# Analysis of Variance Table
+
+# Betadisper Response: Distances
+# Df  Sum Sq Mean Sq F value Pr(>F)
+# Groups     3  102.68  34.228  0.7204 0.5464
+# Residuals 36 1710.46  47.513               
+# adonis(Rectal_euc_dist~Rectal_sample_info_tab$Cohort)
+
+# Number of permutations: 999
+
+# Terms added sequentially (first to last)
+
+# Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)  
+# Rectal_sample_info_tab$Cohort  3     56721   18907  1.1427 0.08695  0.067 .
+# Residuals                     36    595657   16546         0.91305         
+# Total                         39    652379                 1.00000         
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 
+# making our phyloseq object with transformed table
+rectal_vst_count_phy <- otu_table(vst_trans_count_tab[, colnames(vst_trans_count_tab) %in% Rectal_sample_IDs], taxa_are_rows=T)
+rectal_sample_info_tab_phy <- sample_data(Rectal_sample_info_tab)
+rectal_vst_physeq <- phyloseq(rectal_vst_count_phy, rectal_sample_info_tab_phy)
 
+# generating and visualizing the PCoA with phyloseq
+rectal_vst_pcoa <- ordinate(rectal_vst_physeq, method="MDS", distance="euclidean")
+rectal_eigen_vals <- rectal_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-
+# and making our new ordination of just Vagina with our adonis statistic
+plot_ordination(rectal_vst_physeq, rectal_vst_pcoa, color="Cohort") + 
+  labs(col="type") + geom_point(size=1) + 
+  # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
+  #annotate("text", x=25, y=68, label="All Cohorts") +
+  annotate("text", x=25, y=62, label="Permutational ANOVA= 0.067") + 
+  coord_fixed(sqrt(rectal_eigen_vals[2]/rectal_eigen_vals[1])) + ggtitle("PCoA - Rectal only") + 
+  scale_color_brewer(palette = "Set1")
+# scale_color_manual(values=unique(basalt_sample_info_tab$color[order(basalt_sample_info_tab$char)])) + 
+# theme_bw() + theme(legend.position="none")
