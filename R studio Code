@@ -88,8 +88,10 @@ dadaRs <- dada(derepRs, err=errR, pool="pseudo", multithread=48)
 dadaFs[[1]]
 
 #dada-class: object describing DADA2 denoising results
-#243 sequence variants were inferred from 3181 input unique sequences.
+#with pool + true 674 sequence variants were inferred from 3181 input unique sequences.
 #Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16
+# with pseudo pool 244 sequence variants were inferred from 3181 input unique sequences.
+# Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16
 
 #Merge paired reads 
 mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE)
