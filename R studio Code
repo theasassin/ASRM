@@ -426,9 +426,6 @@ tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header=T,
 sample_info_tab <- read.table("ccrm504.tsv", header=T, row.names=1,
 check.names=F, sep="\t")
 
-tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header=T,
-           row.names=1, check.names=F, sep="\t"))
-
 #add color to cohort 
 sample_info_tab$Cohort <- as.character(sample_info_tab$Cohort)
 
