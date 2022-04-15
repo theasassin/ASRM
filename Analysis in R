@@ -97,6 +97,16 @@ Cervix_sample_info_tab <- sample_info_tab[row.names(sample_info_tab) %in% Cervix
 anova(betadisper(Cervix_euc_dist, Cervix_sample_info_tab$Cohort))
 adonis(Cervix_euc_dist~Cervix_sample_info_tab$Cohort)
 
+# Betadisper
+# Analysis of Variance Table
+
+# Response: Distances
+           #Df Sum Sq Mean Sq F value   Pr(>F)   
+#Groups      3   9336 3112.00  4.0047 0.008613 **
+#Residuals 183 142208  777.09                    
+#---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
 #Call:
 # adonis(formula = Cervix_euc_dist ~ Cervix_sample_info_tab$Cohort) 
 
@@ -122,7 +132,7 @@ cervix_vst_physeq <- phyloseq(cervix_vst_count_phy, cervix_sample_info_tab_phy)
 cervix_vst_pcoa <- ordinate(cervix_vst_physeq, method="MDS", distance="euclidean")
 cervix_eigen_vals <- cervix_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just Cervix  with our adonis statistic
+# and making our new ordination  with our adonis statistic
 plot_ordination(cervix_vst_physeq, cervix_vst_pcoa, color="Cohort", shape="Phase") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
@@ -171,7 +181,7 @@ vagina_vst_physeq <- phyloseq(vagina_vst_count_phy, vagina_sample_info_tab_phy)
 vagina_vst_pcoa <- ordinate(vagina_vst_physeq, method="MDS", distance="euclidean")
 vagina_eigen_vals <- vagina_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just Vagina with our adonis statistic
+# and making our new ordination  with our adonis statistic
 plot_ordination(vagina_vst_physeq, vagina_vst_pcoa, color="Cohort", shape="Phase") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
@@ -217,7 +227,7 @@ anus_vst_physeq <- phyloseq(anus_vst_count_phy, anus_sample_info_tab_phy)
 anus_vst_pcoa <- ordinate(anus_vst_physeq, method="MDS", distance="euclidean")
 anus_eigen_vals <- anus_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just Vagina with our adonis statistic
+# and making our new ordination  with our adonis statistic
 plot_ordination(anus_vst_physeq, anus_vst_pcoa, color="Cohort") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
@@ -268,7 +278,7 @@ oral_vst_physeq <- phyloseq(oral_vst_count_phy, oral_sample_info_tab_phy)
 oral_vst_pcoa <- ordinate(oral_vst_physeq, method="MDS", distance="euclidean")
 oral_eigen_vals <- oral_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just Vagina with our adonis statistic
+# and making our new ordination  with our adonis statistic
 plot_ordination(oral_vst_physeq, oral_vst_pcoa, color="Cohort") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
@@ -318,7 +328,7 @@ rectal_vst_physeq <- phyloseq(rectal_vst_count_phy, rectal_sample_info_tab_phy)
 rectal_vst_pcoa <- ordinate(rectal_vst_physeq, method="MDS", distance="euclidean")
 rectal_eigen_vals <- rectal_vst_pcoa$values$Eigenvalues # allows us to scale the axes according to their magnitude of separating apart the samples
 
-# and making our new ordination of just Vagina with our adonis statistic
+# and making our new ordination  with our adonis statistic
 plot_ordination(rectal_vst_physeq, rectal_vst_pcoa, color="Cohort") + 
   labs(col="type") + geom_point(size=1) + 
   # geom_text(aes(label=rownames(cervix_sample_info_tab), hjust=0.3, vjust=-0.4)) + 
