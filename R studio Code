@@ -103,6 +103,8 @@ head(mergers[[1]])
 #construct an ASV sequence table 
 seqtab <- makeSequenceTable(mergers)
 dim(seqtab)
+#[1]   503 13994 with pool 
+# [1]  503 9580 with pseudopool 
 
 # Inspect distribution of sequence lengths
 table(nchar(getSequences(seqtab)))
@@ -114,6 +116,9 @@ table(nchar(getSequences(seqtab)))
 # Remove chimeras
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 dim(seqtab.nochim)
+
+#pseudo [1]  503 4868
+#pool 503 4616
 
 # Determine the frequency of chimeras 
 sum(seqtab.nochim)/sum(seqtab)
