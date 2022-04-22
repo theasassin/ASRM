@@ -1,0 +1,332 @@
+# This is Michael's code to show PERMANOVA among cohorts and phases 
+#remove ASVs with less thatn 1% detection and prevalence
+
+#library(microbiome)
+library(phyloseq)
+library(vegan)
+
+physeq_complete<-readRDS(file = "physeq_complete.rds")
+physeq_complete #[ 4572 taxa and 495 samples ]
+sam<-meta(physeq_complete)%>%mutate(Phase=gsub("lutealbx","luteal",Phase))
+sample_data(physeq_complete)<-sample_data(sam)
+#subset the phyloseq object to only the 3 phases
+unique(sam$Phase) # however none and cesarean persist so we will remove those now 
+physeq_complete_core<-subset_samples(physeq = physeq_complete,Phase!="none")
+physeq_complete_core<-subset_samples(physeq = physeq_complete_core,Phase!="cesarean")
+physeq_complete_core #[ 4572 taxa and 207 samples ]
+
+# now we will perform the compositional change 
+physeq_complete_core_comp<-microbiome::transform(physeq_complete_core,"compositional")
+
+#remove ASVs with less thatn 1% detection and prevalence
+physeq_complete_core_comp<-core(x = physeq_complete_core_comp,detection = 1/100,prevalence = 1/100)
+physeq_complete_core_comp#  [ 92 taxa and 207 samples ]
+
+# setting our distances and making it relative abundances 
+sam<-meta(physeq_complete_core_comp)
+otu.rel<-abundances(physeq_complete_core_comp)
+
+########## Beta diversity #########
+
+## Set the number of permutations
+perm <- how(nperm = 999)
+#set the stratified variables
+setBlocks(perm) <- with(sam, Site)
+
+#run the adonis permanova at ASV level based on bc distance 
+beta<-adonis2(formula =t(otu.rel) ~Phase*Cohort,
+              data = sam,
+              permutations = perm,
+              method = "bray",
+              parallel=48)
+
+beta
+## Bray-Curtis distances between samples
+dis <- vegdist(t(otu.rel),method = "bray")
+sam<-sam%>%mutate(group=factor(paste0(Site,"_",Phase,"_",Cohort)))
+
+
+unique(sam$group)
+
+b_disp<-betadisper(d = dis,group = sam$group)
+b_disp
+plot(b_disp)
+anova(b_disp)
+
+#adonis2(formula = t(otu.rel) ~ Phase * Cohort, data = sam, permutations = perm, method = "bray", parallel = 48)
+#Df SumOfSqs      R2      F Pr(>F)    
+#Phase          2    2.029 0.03090 3.3221  0.001 ***
+#Cohort         3    2.745 0.04181 2.9968  0.001 ***
+#Phase:Cohort   6    1.336 0.02035 0.7292  0.806    
+#Residual     195   59.545 0.90694                  
+#Total        206   65.655 1.00000 
+
+#Analysis of Variance Table
+#Response: Distances
+#Df Sum Sq  Mean Sq F value Pr(>F)
+#Groups     23 1.1008 0.047859  1.4198 0.1059
+#Residuals 183 6.1687 0.033709   
+
+
+# next I only wanted to look at only at Cohort 1 by Phase
+sam<-meta(physeq_complete)%>%mutate(Phase=gsub("lutealbx","luteal",Phase))
+sample_data(physeq_complete)<-sample_data(sam)
+ps<- subset_samples(physeq = physeq_complete, Phase!="none")
+psCohort134 <- subset_samples(ps, Cohort!="Cohort2", Cohort!="Cohort3")
+psCohort1and4 <- subset_samples(psCohort134, Cohort!="Cohort3")
+pstemp <- subset_samples(psCohort1and4, Phase!="cesarean")
+psChort1 <- subset_samples(pstemp, Cohort!="Cohort4")
+unique(psChort1$Phase)
+
+psCohort1core <- core(x = psChort1, detection = 1/100, prevalence = 1/100)
+
+psCohort1.rel <- microbiome::transform(psCohort1core, "compositional")
+otu.1 <- abundances(psCohort1.rel)
+meta.1 <- meta(psCohort1.rel)
+
+adonis2(formula = t(otu.1)~Phase+Site, data=meta.1, permutations = 999, strata = meta.1$Site, method = "bray", parallel = TRUE)
+
+dis.1 <- vegdist(t(otu.1))
+anova(betadisper(dis.1, meta.1$Phase))
+
+#adonis2(formula = t(otu.1) ~ Phase + Site, data = meta.1, permutations = 999, method = "bray", parallel = TRUE, strata = meta.1$Site)
+#Df SumOfSqs      R2      F Pr(>F)  
+#Phase     2   1.2013 0.07315 2.1090  0.012 *
+#Site      1   1.5506 0.09442 5.4445  0.151  
+#Residual 48  13.6707 0.83243                
+#Total    51  16.4226 1.00000                
+
+#Analysis of Variance Table
+
+#Response: Distances
+#Df  Sum Sq   Mean Sq F value Pr(>F)
+#Groups     2 0.00572 0.0028618    0.22 0.8033
+#Residuals 49 0.63740 0.0130082       
+
+# here I am showing that in cohort 1, there are distinct differences amongst the menses, follicular, and luteal phase. 
+
+# Looking at Cohort 2 only by phase 
+
+# this is relative abundance (transformed)
+sam<-meta(physeq_complete)%>%mutate(Phase=gsub("lutealbx","luteal",Phase))
+sample_data(physeq_complete)<-sample_data(sam)
+ps<- subset_samples(physeq = physeq_complete, Phase!="none")
+psCohort2 <- subset_samples(physeq=ps, Cohort!="Cohort1")
+psCohort2 <- subset_samples(physeq=psCohort2, Cohort!="Cohort3")
+psCohort2 <- subset_samples(physeq=psCohort2, Cohort!="Cohort4")
+psChort2 <- subset_samples(psCohort2, Phase!="cesarean")
+psCohort2core <- core(x = psChort2, detection = 1/100, prevalence = 1/100)
+
+psCohort2.rel <- microbiome::transform(psCohort2core, "compositional")
+otu.2 <- abundances(psCohort2.rel)
+meta.2 <- meta(psCohort2.rel)
+
+# this is relative abundance (transformed)
+adonis2(formula = t(otu.2)~Phase+Site, data=meta.2, permutations = 999, strata = meta.2$Site, method = "bray", parallel = TRUE)
+
+dist.2<- vegdist(t(otu.2))
+anova (betadisper(dist.2, meta.2$Phase))
+
+#adonis2(formula = t(otu.2) ~ Phase + Site, data = meta.2, permutations = 999, method = "bray", #Df SumOfSqs      R2      F Pr(>F)
+#Phase     2   0.8257 0.04467 1.3399  0.178
+#Site      1   1.6367 0.08855 5.3121  0.321
+#Residual 52  16.0212 0.86678              
+#Total    55  18.4836 1.00000             
+---
+
+#Response: Distances
+#Df  Sum Sq  Mean Sq F value Pr(>F)
+#Groups     2 0.01088 0.005439  0.4657 0.6302
+#Residuals 53 0.61899 0.011679  
+
+# Looking at Cohort 3 only by phase 
+# this is relative abundance (transformed)
+sam<-meta(physeq_complete)%>%mutate(Phase=gsub("lutealbx","luteal",Phase))
+sample_data(physeq_complete)<-sample_data(sam)
+ps<- subset_samples(physeq = physeq_complete, Phase!="none")
+psCohort3 <- subset_samples(physeq=ps, Cohort!="Cohort1")
+psCohort3 <- subset_samples(physeq=psCohort3, Cohort!="Cohort2")
+psCohort3 <- subset_samples(physeq=psCohort3, Cohort!="Cohort4")
+psChort3 <- subset_samples(psCohort3, Phase!="cesarean")
+psCohort3core <- core(x = psChort3, detection = 1/100, prevalence = 1/100)
+
+psCohort3.rel <- microbiome::transform(psCohort3core, "compositional")
+otu.3 <- abundances(psCohort3.rel)
+meta.3 <- meta(psCohort3.rel)
+
+adonis2(formula = t(otu.3) ~ Phase + Site, data = meta.3, permutations = 999, method = "bray", parallel = TRUE, strata = meta.3$Site)
+#Df SumOfSqs      R2      F Pr(>F)
+#Phase     2   0.8698 0.05168 1.5317  0.102
+#Site      1   2.0472 0.12164 7.2099  0.508
+#Residual 49  13.9129 0.82668              
+#Total    52  16.8299 1.00000              
+
+#dist.3<- vegdist(t(otu.3))
+#anova (betadisper(dist.3, meta.3$Phase))
+#Analysis of Variance Table
+
+Response: Distances
+#Df  Sum Sq   Mean Sq F value Pr(>F)
+#Groups     2 0.01547 0.0077348   0.595 0.5554
+#Residuals 50 0.65000 0.0130000  
+
+#adonis2(formula = t(otu.3) ~ Phase + Site, data = meta.3, permutations = 999, method = "bray", parallel = TRUE, strata = meta.3$Site)
+  
+#Df SumOfSqs      R2      F Pr(>F)
+#Phase     2   0.8698 0.05168 1.5317  0.108
+#Site      1   2.0472 0.12164 7.2099  0.501
+#Residual 49  13.9129 0.82668              
+#Total    52  16.8299 1.00000              
+#dist.3<- vegdist(t(otu.3))
+#anova (betadisper(dist.3, meta.3$Phase))
+#Analysis of Variance Table
+
+#Response: Distances
+#Df  Sum Sq   Mean Sq F value Pr(>F)
+#Groups     2 0.01547 0.0077348   0.595 0.5554
+#Residuals 50 0.65000 0.0130000 
+
+
+# Looking at Cohort 4 only by phase 
+
+# this is relative abundance (transformed)
+sam<-meta(physeq_complete)%>%mutate(Phase=gsub("lutealbx","luteal",Phase))
+sample_data(physeq_complete)<-sample_data(sam)
+ps<- subset_samples(physeq = physeq_complete, Phase!="none")
+psCohort134 <- subset_samples(ps, Cohort!="Cohort2", Cohort!="Cohort3")
+psCohort1and4 <- subset_samples(psCohort134, Cohort!="Cohort3")
+pstemp <- subset_samples(psCohort1and4, Phase!="cesarean")
+psChort4 <- subset_samples(pstemp, Cohort!="Cohort1")
+
+psCohort4core <- core(x = psChort4, detection = 1/100, prevalence = 1/100)
+
+psCohort4.rel <- microbiome::transform(psCohort4core, "compositional")
+otu.4 <- abundances(psCohort4.rel)
+meta.4 <- meta(psCohort4.rel)
+
+# this is relative abundance (transformed)
+adonis2(formula = t(otu.4)~Phase+Site, data=meta.4, permutations = 999, strata = meta.4$Site, method = "bray", parallel = TRUE)
+
+dist.4<- vegdist(t(otu.4))
+anova (betadisper(dist.4, meta.4$Phase))
+
+#Df SumOfSqs      R2      F Pr(>F)
+#Phase     2   0.5525 0.04461 1.2099  0.283
+#Site      1   2.2427 0.18108 9.8223  0.460
+#Residual 42   9.5898 0.77431              
+#Total    45  12.3850 1.00000              
+
+
+#Response: Distances
+#Df   Sum Sq   Mean Sq F value Pr(>F)
+#Groups     2 0.002982 0.0014912   0.223  0.801
+#Residuals 43 0.287572 0.0066877  
+
+#Response: Distances
+#Df   Sum Sq   Mean Sq F value Pr(>F)
+#Groups     2 0.002982 0.0014912   0.223  0.801
+#Residuals 43 0.287572 0.0066877 
+
+# here i am showing no difference between phases in cohort 4 !
+
+#what about anal and rectal samples ? of not i called them combined anal but it is anus and rectum together 
+ps.anal <- subset_samples(physeq=physeq_complete, Site!="oral")
+ps.anal <- subset_samples(physeq=ps.anal, Site!="cervix")
+ps.anal <- subset_samples(physeq=ps.anal, Site!="vagina")
+
+ps.anal.core <- core(x = ps.anal, detection = 1/100, prevalence = 1/100)
+ps.anal.core.rel <- microbiome::transform(ps.anal.core, "compositional")
+otu.anal <- abundances(ps.anal.core.rel)
+meta.anal<- meta(ps.anal.core.rel)
+
+# this is relative abundance (transformed)
+adonis2(formula = t(otu.anal)~Cohort, data=meta.anal, permutations = 999, #strata = meta.anal$Phase, 
+        method = "bray", parallel = TRUE)
+
+dist.anal<- vegdist(t(otu.anal))
+anova (betadisper(dist.anal, meta.anal$Cohort))
+
+# both are signficicant 
+#adonis2(formula = t(otu.anal) ~ Cohort, data = meta.anal, permutations = 999, method = "bray", parallel = TRUE)
+#Df SumOfSqs      R2      F Pr(>F)    
+#Cohort     3   1.9142 0.06966 2.6457  0.001 ***
+#Residual 106  25.5641 0.93034                  
+#Total    109  27.4783 1.00000                  
+---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#dist.anal<- vegdist(t(otu.anal))
+#anova (betadisper(dist.anal, meta.anal$Cohort))
+#Analysis of Variance Table
+
+#Response: Distances
+#Df  Sum Sq   Mean Sq F value  Pr(>F)  
+#Groups      3 0.06640 0.0221318  3.2737 0.02402 *
+#Residuals 106 0.71662 0.0067606    
+
+# just anus samples 
+
+ps.anus <- subset_samples(physeq=physeq_complete, Site!="oral")
+ps.anus <- subset_samples(physeq=ps.anus, Site!="cervix")
+ps.anus <- subset_samples(physeq=ps.anus, Site!="rectal")
+ps.anus <- subset_samples(physeq=ps.anus, Site!="vagina")
+
+ps.anus.core <- core(x = ps.anus, detection = 1/100, prevalence = 1/100)
+ps.anus.core.rel <- microbiome::transform(ps.anus.core, "compositional")
+otu.anus <- abundances(ps.anus.core.rel)
+meta.anus<- meta(ps.anus.core.rel)
+
+# this is relative abundance (transformed)
+adonis2(formula = t(otu.anus)~Cohort, data=meta.anus, permutations = 999, #strata = meta.anus$Phase, 
+        method = "bray", parallel = TRUE)
+
+dist.anus<- vegdist(t(otu.anus))
+anova (betadisper(dist.anus, meta.anus$Cohort))
+
+#adonis2(formula = t(otu.anus) ~ Cohort, data = meta.anus, permutations = 999, method = "bray", parallel = TRUE)
+#Df SumOfSqs      R2      F Pr(>F)    
+#Cohort    3   2.7498 0.15052 3.8981  0.001 ***
+#Residual 66  15.5191 0.84948                  
+#Total    69  18.2689 1.00000                  
+
+#dist.anus<- vegdist(t(otu.anus))
+#anova (betadisper(dist.anus, meta.anus$Cohort))
+#Analysis of Variance Table
+
+#Response: Distances
+#Df  Sum Sq  Mean Sq F value Pr(>F)
+#Groups     3 0.04133 0.013776  1.2608 0.2951
+#Residuals 66 0.72112 0.010926 
+
+# Here am showing significant difference amongst anal samples by cohort 
+
+# finally I will jsut looke at rectal samples for completeness sake 
+
+
+ps.rectal <- subset_samples(physeq=physeq_complete, Site!="oral")
+ps.rectal <- subset_samples(physeq=ps.rectal, Site!="cervix")
+ps.rectal <- subset_samples(physeq=ps.rectal, Site!="anus")
+ps.rectal <- subset_samples(physeq=ps.rectal, Site!="vagina")
+
+ps.rectal.core <- core(x = ps.rectal, detection = 1/100, prevalence = 1/100)
+ps.rectal.core.rel <- microbiome::transform(ps.rectal.core, "compositional")
+otu.rectal <- abundances(ps.rectal.core.rel)
+meta.rectal<- meta(ps.rectal.core.rel)
+
+# this is relative abundance (transformed)
+adonis2(formula = t(otu.rectal)~Cohort, data=meta.rectal, permutations = 999, #strata = meta.rectal$Phase, 
+        method = "bray", parallel = TRUE)
+
+dist.rectal<- vegdist(t(otu.rectal))
+anova (betadisper(dist.rectal, meta.rectal$Cohort))
+
+#adonis2(formula = t(otu.rectal) ~ Cohort, data = meta.rectal, permutations = 999, method = "bray", parallel = TRUE)
+#Df SumOfSqs      R2      F Pr(>F)
+#Cohort    3   0.6375 0.08038 1.0489  0.333
+#Residual 36   7.2929 0.91962              
+#Total    39   7.9303 1.00000              
+
+#Analysis of Variance Table
+#Response: Distances
+#Df   Sum Sq   Mean Sq F value  Pr(>F)  
+#Groups     3 0.028498 0.0094993  3.1043 0.03853 *
+#Residuals 36 0.110163 0.0030601                  
