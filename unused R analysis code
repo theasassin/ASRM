@@ -1,4 +1,5 @@
 # this is the code that michael helped me make. It is a combined PCoA plot and a relative abundance chart 
+#### did not use because not all samples included! please ignore##########
 
 #load the library 
 library(microbiome)
